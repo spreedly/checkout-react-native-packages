@@ -65,12 +65,6 @@ export function PaymentForm() {
 - **[Examples](docs/Examples.md)** - Code examples and use cases
 - **[React Native 0.76 Requirements](docs/RN_076_Requirement.md)** - Version-specific requirements
 
-### SDK Reference
-
-- **[API Reference](docs/Integration_Guide.md#api-reference)** - Complete API documentation
-- **[Component Reference](docs/Integration_Guide.md#components)** - UI component documentation
-- **[Event Handling](docs/Integration_Guide.md#event-handling)** - Event system documentation
-
 ### Troubleshooting
 
 - **[Android Lint Troubleshooting](docs/Android_Lint_Troubleshooting.md)** - Android-specific issues
