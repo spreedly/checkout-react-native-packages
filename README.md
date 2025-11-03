@@ -70,6 +70,10 @@ export function PaymentForm() {
 - **[Android Lint Troubleshooting](docs/Android_Lint_Troubleshooting.md)** - Android-specific issues
 - **[Common Issues](docs/Integration_Guide.md#troubleshooting)** - General troubleshooting guide
 
+### Version History
+
+- **[CHANGELOG.md](CHANGELOG.md)** - Detailed version history and release notes
+
 ## 🔧 Compatibility
 
 - **React Native**: 0.76.x
@@ -77,6 +81,18 @@ export function PaymentForm() {
 - **Android**: minSdk 24 (Android 7.0+), targetSdk 34, compileSdk 35
 - **iOS**: 15.1+, Xcode 15+
 - **Architectures**: Legacy and New Architecture (Fabric/TurboModules)
+
+## 📋 Version History
+
+For a detailed list of changes, new features, bug fixes, and updates between versions, please refer to our [CHANGELOG.md](CHANGELOG.md). The changelog provides comprehensive information about:
+
+- **New Features**: Added functionality and enhancements
+- **Bug Fixes**: Resolved issues and improvements
+- **Breaking Changes**: API changes that may affect existing integrations
+- **Security Updates**: Security patches and vulnerability fixes
+- **Deprecations**: Features scheduled for removal
+
+Use the changelog to understand what's changed between versions and to identify which version includes the features or fixes you need.
 
 ## 🏗️ Architecture Support
 
