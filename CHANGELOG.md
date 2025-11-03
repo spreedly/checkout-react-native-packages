@@ -1,3 +1,10 @@
+## [0.0.3-beta.16] - 2025-11-03
+
+### ✨ Added
+
+  - Adding changelog to release and improved changelog messages (f3a148c)
+
+---
 ## [0.0.3-beta.15] - 2025-11-03
 
 ---
