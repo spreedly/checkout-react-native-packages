@@ -1,8 +1,25 @@
+## [0.0.3-beta.17] - 2025-11-04
+
+### 🐛 Fixed
+
+  - Artifact inspection logs added (6a41c8c)
+  - Artifact inspection logs added (d3548bd)
+  - Sourcemap not distributed (068dce0)
+  - Doc updated to data safety section format (55ccc76)
+  - Docs added and privacyinfo for sdk added (62c1335)
+  - Readme updated (#61) (#61, 0bdd54d)
+
+### 🔄 Changed
+
+  - Changelog and versioning (#62) (HC-447, cbb594b)
+  - Using committed lock files in CI (#60) (HC-467, b897ed7)
+
+---
 ## [0.0.3-beta.16] - 2025-11-03
 
 ### ✨ Added
 
-  - Adding changelog to release and improved changelog messages (f3a148c)
+- Adding changelog to release and improved changelog messages (f3a148c)
 
 ---
 
@@ -111,3 +128,5 @@ Copy and customize this template when creating a new release:
 ```
 
 ---
+
+[0.0.3-beta.5]: https://github.com/spreedly/checkout-react-native/releases/tag/v0.0.3-beta.5
