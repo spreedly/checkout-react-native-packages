@@ -65,9 +65,30 @@ export function PaymentForm() {
 - **[Examples](docs/Examples.md)** - Code examples and use cases
 - **[React Native 0.76 Requirements](docs/RN_076_Requirement.md)** - Version-specific requirements
 
+### Privacy & Security
+
+- **[Unified Privacy](docs/Unified_Privacy.md)** - Comprehensive privacy documentation
+- **[Platform Privacy Requirements](docs/Platform_Privacy_Requirements.md)** - Privacy requirements across platforms
+- **[iOS Privacy Guide](docs/iOS_Privacy_Guide.md)** - iOS-specific privacy setup
+- **[Android Data Safety Guide](docs/Android_Data_Safety_Guide.md)** - Android Data Safety form requirements
+- **[Source Maps Security Guide](docs/Source_Maps_Security_Guide.md)** - Secure source maps configuration
+
+### Platform-Specific Guides
+
+- **[Android Lint Troubleshooting](docs/Android_Lint_Troubleshooting.md)** - Android-specific issues and troubleshooting
+- **[Xcode Cloud](docs/Xcode_Cloud.md)** - Xcode Cloud integration guide
+
+### Development & Testing
+
+- **[Unit Testing](docs/Unit_Testing.md)** - Testing guide and best practices
+
+### Distribution
+
+- **[App Distribution Guide](docs/App_Distribution_Guide.md)** - App distribution and release process
+- **[GitHub Private Release Guide](docs/GitHub_Private_Release_Guide.md)** - GitHub private release setup
+
 ### Troubleshooting
 
-- **[Android Lint Troubleshooting](docs/Android_Lint_Troubleshooting.md)** - Android-specific issues
 - **[Common Issues](docs/Integration_Guide.md#troubleshooting)** - General troubleshooting guide
 
 ### Version History

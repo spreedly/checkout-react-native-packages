@@ -3044,7 +3044,6 @@ Contact Spreedly support if:
 For additional support and questions:
 
 - **Documentation**: [Spreedly Documentation](https://docs.spreedly.com)
-- **GitHub Issues**: [React Native SDK Issues](https://github.com/spreedly/checkout-react-native/issues)
 - **Support**: Contact Spreedly Support
 
 ---
