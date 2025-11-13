@@ -874,38 +874,38 @@ export function ExpressCheckout() {
 
 ### With Custom Theme
 
-You can customize the Express checkout form as per your requirement using custom theme -
+You can customize the appearance of payment components to match your brand. For comprehensive theming documentation including dark mode support, see the [Theme Customization Guide](./Theme_Guide.md).
+
+**Quick Example:**
 
 ```typescript
-import { SpreedlyCore, type BaseThemeConfig } from '@spreedly/react-native-checkout';
+import { SpreedlyCore } from '@spreedly/react-native-checkout';
 
-const customTheme: BaseThemeConfig = {
-  primaryColor: '#6366F1',
-  secondaryColor: '#8B5CF6',
-  formBorderColor: '#8B5CF6',
-  formBackgroundColor: '#FFFFFF',
-  fieldBackgroundColor: '#FFFFFF',
-  fieldLabelColor: '#6366F1',
-  borderRadius: 8,
-  fieldShape: 'rounded',
-};
-
-export function ThemedExpressCheckout() {
-  const handlePaymentPress = () => {
-    SpreedlyCore.paymentBottomSheet({
-      allowBlankName: false,
-      allowExpiredDate: false,
-      yearFormat: '4',
-      nameDisplayMode: 'singleField',
-      config: customTheme, // Apply custom theme
-    });
-  };
-
-  return (
-    <Button title="Start Themed Payment" onPress={handlePaymentPress} />
-  );
-}
+SpreedlyCore.paymentBottomSheet({
+  allowBlankName: false,
+  allowExpiredDate: false,
+  yearFormat: '4',
+  nameDisplayMode: 'singleField',
+  theme: {
+    primaryColor: '#6366F1',
+    secondaryColor: '#8B5CF6',
+    formBorderColor: '#D1D5DB',
+    formBackgroundColor: '#FFFFFF',
+    fieldBackgroundColor: '#F9FAFB',
+    fieldLabelColor: '#6B7280',
+    borderRadius: 8,
+    fieldShape: 'rounded',
+  },
+});
 ```
+
+**📖 For complete theming documentation**: See [Theme_Guide.md](./Theme_Guide.md) for:
+
+- Dark mode support
+- Global theme configuration
+- Component-level theming
+- Pre-built theme examples
+- Platform-specific behavior
 
 ---
 
@@ -1363,29 +1363,38 @@ const styles = StyleSheet.create({
 ### Global SDK Configuration
 
 ```typescript
-import {
-  SpreedlyCore,
-  type BaseThemeConfig,
-} from '@spreedly/react-native-checkout';
+import { SpreedlyCore } from '@spreedly/react-native-checkout';
 
 // Set global validation parameters
 SpreedlyCore.setParam('ALLOW_BLANK_NAME', false);
 SpreedlyCore.setParam('ALLOW_EXPIRED_DATE', false);
 
-// Set global theme
-const globalTheme: BaseThemeConfig = {
-  primaryColor: '#0077C8',
-  secondaryColor: '#AFB4B5',
-  formBorderColor: '#E0E0E0',
-  formBackgroundColor: '#FFFFFF',
-  fieldBackgroundColor: '#FFFFFF',
-  fieldLabelColor: '#AFB4B5',
-  borderRadius: 8,
-  fieldShape: 'rounded',
-};
-
-SpreedlyCore.setGlobalTheme(globalTheme);
+// Set global theme (see Theme_Guide.md for complete documentation)
+SpreedlyCore.setGlobalTheme({
+  theme: {
+    primaryColor: '#0077C8',
+    secondaryColor: '#AFB4B5',
+    formBorderColor: '#D1D5DB',
+    formBackgroundColor: '#FFFFFF',
+    fieldBackgroundColor: '#FFFFFF',
+    fieldLabelColor: '#6B7280',
+    borderRadius: 8,
+    fieldShape: 'rounded',
+  },
+  darkTheme: {
+    primaryColor: '#60A5FA',
+    secondaryColor: '#9CA3AF',
+    formBorderColor: '#374151',
+    formBackgroundColor: '#1F2937',
+    fieldBackgroundColor: '#111827',
+    fieldLabelColor: '#9CA3AF',
+    borderRadius: 8,
+    fieldShape: 'rounded',
+  },
+});
 ```
+
+**📖 For complete theming documentation**: See [Theme_Guide.md](./Theme_Guide.md)
 
 #### Understanding Validation Parameters
 
@@ -1794,93 +1803,90 @@ export function usePaymentWithRetry() {
 
 ### Theme Configuration
 
-```typescript
-import { type BaseThemeConfig } from '@spreedly/react-native-checkout';
+The Spreedly SDK supports comprehensive theming with automatic dark mode support. For complete theming documentation, see the [Theme Customization Guide](./Theme_Guide.md).
 
-// Light theme
-export const lightTheme: BaseThemeConfig = {
-  primaryColor: '#007AFF',
-  secondaryColor: '#6B7280',
-  formBorderColor: '#D1D5DB',
-  formBackgroundColor: '#FFFFFF',
-  fieldBackgroundColor: '#F9FAFB',
-  fieldLabelColor: '#374151',
-  borderRadius: 12,
-  fieldShape: 'rounded',
-};
-
-// Dark theme
-export const darkTheme: BaseThemeConfig = {
-  primaryColor: '#0A84FF',
-  secondaryColor: '#8E8E93',
-  formBorderColor: '#38383A',
-  formBackgroundColor: '#1C1C1E',
-  fieldBackgroundColor: '#2C2C2E',
-  fieldLabelColor: '#FFFFFF',
-  borderRadius: 12,
-  fieldShape: 'rounded',
-};
-
-// Brand theme
-export const brandTheme: BaseThemeConfig = {
-  primaryColor: '#6366F1', // Indigo
-  secondaryColor: '#8B5CF6', // Purple
-  formBorderColor: '#C7D2FE',
-  formBackgroundColor: '#FFFFFF',
-  fieldBackgroundColor: '#FAFAFF',
-  fieldLabelColor: '#4338CA',
-  borderRadius: 16,
-  fieldShape: 'rounded',
-};
-```
-
-### Custom Field Styling
+**Quick Theme Example:**
 
 ```typescript
-import { StyleSheet } from 'react-native';
+import { SpreedlyCore, SPLTextField, FormFieldTypes } from '@spreedly/react-native-checkout';
 
-export const fieldStyles = StyleSheet.create({
-  primary: {
-    borderWidth: 2,
-    borderColor: '#007AFF',
+// Set global theme with dark mode support
+SpreedlyCore.setGlobalTheme({
+  theme: {
+    primaryColor: '#6366F1',
+    secondaryColor: '#8B5CF6',
+    formBorderColor: '#D1D5DB',
+    formBackgroundColor: '#FFFFFF',
+    fieldBackgroundColor: '#F9FAFB',
+    fieldLabelColor: '#6B7280',
     borderRadius: 12,
-    backgroundColor: '#F8FAFF',
-    height: 56,
-    paddingHorizontal: 16,
-    fontSize: 16,
+    fieldShape: 'rounded',
   },
-  error: {
-    borderColor: '#FF3B30',
-    backgroundColor: '#FFF5F5',
-  },
-  success: {
-    borderColor: '#34C759',
-    backgroundColor: '#F0FFF4',
-  },
-  disabled: {
-    backgroundColor: '#F2F2F7',
-    borderColor: '#C7C7CC',
-    opacity: 0.6,
+  darkTheme: {
+    primaryColor: '#818CF8',
+    secondaryColor: '#A78BFA',
+    formBorderColor: '#374151',
+    formBackgroundColor: '#1F2937',
+    fieldBackgroundColor: '#111827',
+    fieldLabelColor: '#9CA3AF',
+    borderRadius: 12,
+    fieldShape: 'rounded',
   },
 });
 
-export function StyledTextField({ fieldType, hasError, isValid, ...props }) {
-  const getFieldStyle = () => {
-    if (hasError) return [fieldStyles.primary, fieldStyles.error];
-    if (isValid) return [fieldStyles.primary, fieldStyles.success];
-    return fieldStyles.primary;
-  };
+// Or apply theme to individual components
+<SPLTextField
+  formFieldType={FormFieldTypes.CARD}
+  label="Card Number"
+  theme={lightTheme}
+  darkTheme={darkTheme}
+/>
+```
 
+**📖 Complete Theming Documentation**: See [Theme_Guide.md](./Theme_Guide.md) for:
+
+- Global theme configuration
+- Component-level theming
+- Dark mode implementation
+- Pre-built theme examples
+- Platform-specific behavior
+- Accessibility guidelines
+
+### Custom Field Styling
+
+For styling the wrapper containers around SDK components:
+
+```typescript
+import { StyleSheet } from 'react-native';
+import { SPLTextField, FormFieldTypes } from '@spreedly/react-native-checkout';
+
+export const fieldStyles = StyleSheet.create({
+  container: {
+    marginBottom: 16,
+  },
+  fieldWrapper: {
+    borderWidth: 2,
+    borderColor: '#007AFF',
+    borderRadius: 12,
+    padding: 4,
+  },
+});
+
+export function StyledPaymentField() {
   return (
-    <SPLTextField
-      formFieldType={fieldType}
-      label={props.label || fieldType}
-      style={getFieldStyle()}
-      {...props}
-    />
+    <View style={fieldStyles.container}>
+      <View style={fieldStyles.fieldWrapper}>
+        <SPLTextField
+          formFieldType={FormFieldTypes.CARD}
+          label="Card Number"
+        />
+      </View>
+    </View>
   );
 }
 ```
+
+**Note**: The `style` prop on `SPLTextField` applies to the native wrapper view, not the internal field styling. Use `theme` and `darkTheme` props to customize the field appearance itself.
 
 ---
 
@@ -1923,7 +1929,10 @@ Show the express checkout bottom sheet.
 - `options.allowExpiredDate?: boolean` - Allow expired dates
 - `options.yearFormat?: '2' | '4'` - Year format display
 - `options.nameDisplayMode?: 'singleField' | 'separateFields'` - Name input mode
-- `options.config?: BaseThemeConfig` - Custom theme configuration
+- `options.theme?: BaseThemeConfig` - Custom theme for light mode
+- `options.darkTheme?: BaseThemeConfig` - Custom theme for dark mode
+
+**For theming documentation**, see [Theme_Guide.md](./Theme_Guide.md)
 
 **🚧 SDK Enhancement Recommendations:**
 
@@ -1949,9 +1958,11 @@ Show the express checkout bottom sheet.
 
 3. **Runtime Validation**: The SDK should validate these parameters and provide clear error messages for invalid values rather than failing silently.
 
-#### `SpreedlyCore.setGlobalTheme(theme: BaseThemeConfig): void`
+#### `SpreedlyCore.setGlobalTheme(options: GlobalThemeOptions | BaseThemeConfig): void`
 
-Set global theme for all SDK components.
+Set global theme for all SDK components with optional dark mode support.
+
+**For complete theming documentation**, see [Theme_Guide.md](./Theme_Guide.md)
 
 #### `SpreedlyCore.setParam(parameter: ValidationParameter, value: boolean): void`
 
@@ -1968,12 +1979,15 @@ Secure hosted field component for payment data entry.
 - `formFieldType: string` - **Required**. Field type from FormFieldTypes or AdditionalFields
 - `label: string` - **Required**. Field label or placeholder text shown within the field
 - `errorMessage?: string` - Optional error message to display beneath the field
-- `config?: CustomThemeConfig` - Visual theme (colors, shapes) applied to the field
+- `theme?: CustomThemeConfig` - Visual theme for light mode (colors, shapes) applied to the field
+- `darkTheme?: CustomThemeConfig` - Visual theme for dark mode. If not provided, uses `theme` for both modes
 - `isRequired?: boolean` - Whether this field is required for validation. Defaults to `true`
 - `yearFormat?: string` - Expiry year format: `'2'` for YY, `'4'` for YYYY. Affects expiry fields only
 - `style?: StyleProp<ViewStyle>` - Style applied to the native wrapper view
 - `onValidationChange?: (isValid: boolean) => void` - Called when the native field validation state changes
 - `onContentSizeChange?: (size: { width: number; height: number }) => void` - Called when the native content size changes
+
+**For theming documentation**, see [Theme_Guide.md](./Theme_Guide.md)
 
 **Example Usage:**
 
@@ -1982,7 +1996,8 @@ Secure hosted field component for payment data entry.
   formFieldType={FormFieldTypes.CARD}
   label="Card Number"
   errorMessage={cardError}
-  config={customTheme}
+  theme={lightTheme}
+  darkTheme={darkTheme}
   isRequired={true}
   style={{ marginBottom: 16 }}
   onValidationChange={(isValid) => setCardValid(isValid)}
@@ -2045,45 +2060,26 @@ Secure hosted field component for payment data entry.
 
 #### Theme Configuration Types
 
-**`BaseThemeConfig`** - Main theme interface used throughout the SDK:
+For complete theme configuration documentation including dark mode support, see [Theme_Guide.md](./Theme_Guide.md).
+
+**Quick Reference:**
 
 ```typescript
 interface BaseThemeConfig {
-  primaryColor: string; // Primary brand color (buttons, highlights)
-  secondaryColor: string; // Secondary color (borders, accents)
-  formBorderColor: string; // Form container border color
-  formBackgroundColor: string; // Form container background
-  fieldBackgroundColor: string; // Individual field background
-  fieldLabelColor: string; // Field label text color
-  borderRadius: number; // Corner radius in pixels
-  fieldShape: string; // Field shape ('rounded' | 'square')
+  primaryColor: string;
+  secondaryColor: string;
+  formBorderColor: string;
+  formBackgroundColor: string;
+  fieldBackgroundColor: string;
+  fieldLabelColor: string;
+  borderRadius: number;
+  fieldShape: string;
 }
-```
 
-**Type Aliases** (all equivalent to `BaseThemeConfig`):
-
-- `CustomThemeConfig` - Used in SPLTextField props
-- `PaymentSheetThemeConfig` - Used in payment bottom sheet
-- `NativeThemeConfig` - Used internally for codegen compatibility
-
-**Usage Examples:**
-
-```typescript
-// Global theme
-const globalTheme: BaseThemeConfig = { /* theme config */ };
-SpreedlyCore.setGlobalTheme(globalTheme);
-
-// Component-specific theme
-<SPLTextField
-  formFieldType={FormFieldTypes.CARD}
-  label="Card Number"
-  config={globalTheme} // Uses CustomThemeConfig (same as BaseThemeConfig)
-/>
-
-// Payment bottom sheet theme
-SpreedlyCore.paymentBottomSheet({
-  config: globalTheme // Uses BaseThemeConfig
-});
+interface GlobalThemeOptions {
+  theme?: BaseThemeConfig;
+  darkTheme?: BaseThemeConfig;
+}
 ```
 
 ---
@@ -2152,7 +2148,7 @@ const environmentKey = Config.SPREEDLY_ENVIRONMENT_KEY;
 
 **Screenshot and Screen Recording Prevention**
 
-Payment screens should implement additional security measures to prevent unauthorized capture of sensitive information. Consider implementing the following protections in your React Native application:
+Payment screens should implement additional security measures to prevent unauthorized capture of sensitive information. The Spreedly SDK provides built-in `ScreenSecurity` module to help protect payment flows from screenshots and screen recording.
 
 **Security Concerns:**
 
@@ -2161,22 +2157,80 @@ Payment screens should implement additional security measures to prevent unautho
 - App switcher thumbnails can expose payment information
 - Screen sharing during video calls poses data exposure risks
 
-**Recommended Research Topics:**
+#### Built-in Screenshot Prevention
 
-For developers looking to implement screenshot prevention and screen recording detection:
+The Spreedly SDK provides screenshot and screen recording protection on both iOS and Android platforms. Both platforms now require explicit activation of the `ScreenSecurity` module.
 
-1. **React Native Screen Security Libraries**: Search for community packages that provide screenshot prevention capabilities for React Native apps.
+**Manual Activation Required (iOS & Android)**
 
-2. **Native Module Development**: If building custom protection, research:
-   - Creating React Native native modules
-   - Platform-specific security APIs
-   - Bridge communication patterns
+You need to explicitly activate the `ScreenSecurity` module for screenshot protection on both platforms:
 
-3. **Additional Security Measures**:
-   - Implement session timeouts for payment screens
-   - Display security warnings before payment entry
-   - Consider biometric authentication for payment actions
-   - Clear sensitive data when app enters background
+```typescript
+import React, { useEffect } from 'react';
+import { ScreenSecurity } from '@spreedly/react-native-checkout';
+
+const App = () => {
+  useEffect(() => {
+    // Activate screenshot protection on both iOS and Android
+    ScreenSecurity.activateProtection({
+      backgroundColor: '#FFFFFF', // Color shown in iOS screenshots (Android shows black)
+    }).catch(console.error);
+
+    // Cleanup: deactivate protection when app unmounts
+    return () => {
+      ScreenSecurity.deactivateProtection().catch(console.error);
+    };
+  }, []);
+
+  return <AppNavigator />;
+};
+
+export default App;
+```
+
+**Platform-Specific Behavior:**
+
+**iOS Implementation:**
+
+- ✅ Shows specified background color (e.g., white) in screenshots
+- ✅ Provides event listeners for screenshot detection
+- ✅ Provides event listeners for screen recording detection
+- ✅ Can check if screen is being captured in real-time
+
+**Android Implementation:**
+
+- ✅ Uses `FLAG_SECURE` to completely prevent screenshots
+- ✅ Prevents screen recording entirely
+- ✅ Screenshots/recordings show black screen (system behavior)
+- ⚠️ No detection events available (Android platform limitation)
+
+**Platform Comparison:**
+
+| Feature                    | iOS                                                            | Android                                                        |
+| -------------------------- | -------------------------------------------------------------- | -------------------------------------------------------------- |
+| Screenshot Prevention      | ✅ Manual activation via `ScreenSecurity.activateProtection()` | ✅ Manual activation via `ScreenSecurity.activateProtection()` |
+| Screenshot Behavior        | Shows custom background color                                  | Shows black screen (system behavior)                           |
+| Screen Recording Detection | ✅ Available via event listeners                               | ❌ Not available (Android limitation)                          |
+| Configuration Required     | Yes - must call activate/deactivate                            | Yes - must call activate/deactivate                            |
+| Implementation Method      | UITextField overlay technique                                  | FLAG_SECURE window flag                                        |
+
+**Important Notes:**
+
+- **Both Platforms**: You must explicitly activate and deactivate screenshot protection using the `ScreenSecurity` module.
+- **Activation Timing**: Call `activateProtection()` after app initialization to avoid interfering with React Native bridge initialization.
+- **App Store Compliance**: Screenshot protection is compliant with both App Store and Play Store guidelines when used for security purposes.
+- **User Experience**: Consider informing users why screenshot protection is active to avoid confusion.
+- **Background Color**: On iOS, choose a background color that matches your app's theme. On Android, the system always shows black.
+- **Android Limitation**: Android's FLAG_SECURE provides prevention but no detection events. iOS provides both prevention and detection.
+
+**Additional Security Measures:**
+
+Beyond the built-in `ScreenSecurity` module, consider these additional protections:
+
+- Implement session timeouts for payment screens
+- Display security warnings before payment entry
+- Consider biometric authentication for payment actions
+- Clear sensitive data when app enters background
 
 **Note**: The Spreedly SDK's `SPLTextField` components automatically implement security measures including:
 
@@ -3044,6 +3098,7 @@ Contact Spreedly support if:
 For additional support and questions:
 
 - **Documentation**: [Spreedly Documentation](https://docs.spreedly.com)
+- **GitHub Issues**: [React Native SDK Issues](https://github.com/spreedly/checkout-react-native/issues)
 - **Support**: Contact Spreedly Support
 
 ---
