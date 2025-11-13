@@ -63,10 +63,12 @@ export function PaymentForm() {
 
 - **[Integration Guide](docs/Integration_Guide.md)** - Complete integration walkthrough
 - **[Examples](docs/Examples.md)** - Code examples and use cases
+- **[Theme Guide](docs/Theme_Guide.md)** - Theme customization and dark mode support
 - **[React Native 0.76 Requirements](docs/RN_076_Requirement.md)** - Version-specific requirements
 
 ### Privacy & Security
 
+- **[Security Policy](docs/Security.md)** - Security vulnerability reporting and policy
 - **[Unified Privacy](docs/Unified_Privacy.md)** - Comprehensive privacy documentation
 - **[Platform Privacy Requirements](docs/Platform_Privacy_Requirements.md)** - Privacy requirements across platforms
 - **[iOS Privacy Guide](docs/iOS_Privacy_Guide.md)** - iOS-specific privacy setup
