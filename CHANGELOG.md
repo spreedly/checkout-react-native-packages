@@ -1,49 +1,105 @@
+# CHANGELOG
+
 ## [0.0.5] - 2025-11-13
-
-### 📝 Changes
-
-No commits found for this version. This may be a version bump without code changes.
-
----
-## [0.0.3-beta.17] - 2025-11-04
-
-### 🐛 Fixed
-
-- Artifact inspection logs added (6a41c8c)
-- Artifact inspection logs added (d3548bd)
-- Sourcemap not distributed (068dce0)
-- Doc updated to data safety section format (55ccc76)
-- Docs added and privacyinfo for sdk added (62c1335)
-- Readme updated (#61) (#61, 0bdd54d)
-
-### 🔄 Changed
-
-- Changelog and versioning (#62) (HC-447, cbb594b)
-- Using committed lock files in CI (#60) (HC-467, b897ed7)
-
----
-
-## [0.0.3-beta.16] - 2025-11-03
 
 ### ✨ Added
 
-- Adding changelog to release and improved changelog messages (f3a148c)
+- Central Logging to Datadog
+- DAST scan workflow
+- Security documentation
+
+### 🐛 Fixed
+
+- Runners updated, CodeQL issue fix
+- OSS dependency reviewed and turbo library removed
+
+### 🔄 Changed
+
+- Dark theme support
+- Screenshot/Screen recording prevention
+- Security checklist fixes
 
 ---
 
-# CHANGELOG
+## [0.0.4] - 2025-11-04
 
-All notable changes to this project will be documented in this file.
+### 🐛 Fixed
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+- Artifact inspection logs added
+- Sourcemap not distributed
+- Documentation updated to data safety section format
 
-## [0.0.3-beta.5] - 2024-XX-XX
+### 🔄 Changed
 
-### Changed
+- Changelog and versioning improvements
+- Using committed lock files in CI
 
-- Current development version
-- Refer to Git commit history for detailed changes
+---
+
+## [0.0.3] - 2025-11-03
+
+### ✨ Added
+
+- Changelog to release process
+- SDK release setup
+- Font size accessibility handling
+- Keyboard next button functionality for both platforms
+- Integration tests
+
+### 🐛 Fixed
+
+- Bug fixes and stability improvements
+- Theme colors fix
+- Integration documentation updates
+
+### 🔄 Changed
+
+- Version bump for both platforms
+- Theming fixes and improvements
+
+---
+
+## [0.0.2] - 2025-10-01
+
+### ✨ Added
+
+- Initial React Native SDK setup
+- Android SDK initialization with TextField and Checkout button
+- iOS SDK initialization with TextField
+- Checkout functionality on SDK and example app
+- Payment bottom sheet with additional fields
+- Form validations and onValidationChange exposure
+- Custom textfield support
+- Allow blank name and allow expired support
+- Year format handling for both platforms
+- Unit test setup for Android, iOS, and src modules
+- E2E setup with Detox for both platforms
+- Theme selection on payment bottom sheet
+- Navigation setup
+- App distribution workflow using Fastlane, Firebase, and TestFlight
+- Nightly build workflow added
+- CI/CD for lint checks
+- CodeQL workflow added
+
+### 🐛 Fixed
+
+- Year format fix for Android
+- Android and iOS logs fix
+- Payment sheet crash support for missing props
+
+### 🔄 Changed
+
+- Package name to com.spreedly.rn
+- Setup documentation improvements
+
+---
+
+## [0.0.1] - 2025-09-01
+
+### ✨ Added
+
+- Initial project setup
+- React Native SDK foundation
 
 ---
 
@@ -71,7 +127,7 @@ This project follows [Semantic Versioning](https://semver.org/):
 
 Each release must document:
 
-- Change request identifier (e.g., Jira ticket: HC-XXX)
+- Change request identifier
 - Description of changes
 - Security impact assessment (if applicable)
 - Date of release
@@ -81,60 +137,16 @@ Each release must document:
 ```markdown
 ## [1.0.0] - YYYY-MM-DD
 
-**Change Request:** [HC-XXX](JIRA_LINK)
-
 ### Added
 
-- New payment method support (#123)
-- Enhanced validation for card numbers (#124)
+- New payment method support
+- Enhanced validation for card numbers
 
 ### Fixed
 
-- Memory leak in payment form component (#125)
+- Memory leak in payment form component
 
 ### Security
 
 - Updated dependencies to address CVE-XXXX-XXXXX
 ```
-
----
-
-## Template for New Release
-
-Copy and customize this template when creating a new release:
-
-```markdown
-## [X.Y.Z] - YYYY-MM-DD
-
-**Change Request:** [TICKET-ID](JIRA_LINK)
-**Author:** Developer Name
-**Reviewers:** Reviewer Names
-
-### Added
-
-- Description of new features
-
-### Changed
-
-- Description of changes to existing features
-
-### Deprecated
-
-- Features marked for future removal
-
-### Removed
-
-- Features that were removed
-
-### Fixed
-
-- Bug fixes with issue references
-
-### Security
-
-- Security updates and vulnerability fixes
-```
-
----
-
-[0.0.3-beta.5]: https://github.com/spreedly/checkout-react-native/releases/tag/v0.0.3-beta.5
