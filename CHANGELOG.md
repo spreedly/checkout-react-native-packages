@@ -1,8 +1,8 @@
-## [0.1.1] - 2025-12-30
+## [0.0.6] - 2025-12-30
 
-### ✨ Added
+### 🐛 Fixed
 
-  - Color theming updates (#85) (#85, c17ec09)
+  - Changelog refactoring
 
 ---
 # CHANGELOG
