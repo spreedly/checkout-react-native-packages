@@ -1,18 +1,30 @@
+# CHANGELOG
+
 ## [0.1.2] - 2025-12-30
 
 ### 🔄 Changed
 
-  - Fix/release workflow
+- Changelog refactoring
 
 ---
+
+## [0.1.1] - 2025-12-30
+
+### ✨ Added
+
+- Recaching CVV
+- Retaining CVV
+- App UI improvements
+
+---
+
 ## [0.0.6] - 2025-12-30
 
 ### 🐛 Fixed
 
-  - Changelog refactoring
+- Changelog refactoring
 
 ---
-# CHANGELOG
 
 ## [0.0.5] - 2025-11-13
 
