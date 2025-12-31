@@ -1,3 +1,17 @@
+## [0.2.0] - 2025-12-31
+
+### 📝 Changes
+
+No commits found for this version. This may be a version bump without code changes.
+
+### 📦 Native SDK Versions
+
+| Platform | SDK                  | Version |
+| -------- | -------------------- | ------- |
+| Android  | checkout-android     | 0.4.8 |
+| iOS      | checkout-ios-package | 0.0.67 |
+
+---
 # CHANGELOG
 
 ## [0.1.2] - 2025-12-30
@@ -5,6 +19,13 @@
 ### 🔄 Changed
 
 - Changelog refactoring
+
+### 📦 Native SDK Versions
+
+| Platform | SDK                  | Version |
+| -------- | -------------------- | ------- |
+| Android  | checkout-android     | 0.4.8   |
+| iOS      | checkout-ios-package | 0.0.67  |
 
 ---
 
@@ -16,13 +37,27 @@
 - Retaining CVV
 - App UI improvements
 
+### 📦 Native SDK Versions
+
+| Platform | SDK                  | Version |
+| -------- | -------------------- | ------- |
+| Android  | checkout-android     | 0.4.8   |
+| iOS      | checkout-ios-package | 0.0.67  |
+
 ---
 
 ## [0.0.6] - 2025-12-30
 
 ### 🐛 Fixed
 
-- Changelog refactoring
+- Bug fixes and improvements
+
+### 📦 Native SDK Versions
+
+| Platform | SDK                  | Version |
+| -------- | -------------------- | ------- |
+| Android  | checkout-android     | 0.4.8   |
+| iOS      | checkout-ios-package | 0.0.67  |
 
 ---
 
@@ -45,6 +80,13 @@
 - Screenshot/Screen recording prevention
 - Security checklist fixes
 
+### 📦 Native SDK Versions
+
+| Platform | SDK                  | Version |
+| -------- | -------------------- | ------- |
+| Android  | checkout-android     | 0.3.8   |
+| iOS      | checkout-ios-package | 0.0.51  |
+
 ---
 
 ## [0.0.4] - 2025-11-04
@@ -59,6 +101,13 @@
 
 - Changelog and versioning improvements
 - Using committed lock files in CI
+
+### 📦 Native SDK Versions
+
+| Platform | SDK                  | Version |
+| -------- | -------------------- | ------- |
+| Android  | checkout-android     | 0.3.8   |
+| iOS      | checkout-ios-package | 0.0.51  |
 
 ---
 
@@ -82,6 +131,13 @@
 
 - Version bump for both platforms
 - Theming fixes and improvements
+
+### 📦 Native SDK Versions
+
+| Platform | SDK                  | Version |
+| -------- | -------------------- | ------- |
+| Android  | checkout-android     | 0.3.8   |
+| iOS      | checkout-ios-package | 0.0.38  |
 
 ---
 
@@ -117,6 +173,13 @@
 
 - Package name to com.spreedly.rn
 - Setup documentation improvements
+
+### 📦 Native SDK Versions
+
+| Platform | SDK                  | Version |
+| -------- | -------------------- | ------- |
+| Android  | checkout-android     | 0.3.2   |
+| iOS      | checkout-ios-package | 0.0.20  |
 
 ---
 
