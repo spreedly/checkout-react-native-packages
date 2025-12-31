@@ -1,41 +1,11 @@
-## [0.2.0] - 2025-12-31
-
-### 📝 Changes
-
-No commits found for this version. This may be a version bump without code changes.
-
-### 📦 Native SDK Versions
-
-| Platform | SDK                  | Version |
-| -------- | -------------------- | ------- |
-| Android  | checkout-android     | 0.4.8 |
-| iOS      | checkout-ios-package | 0.0.67 |
-
----
 # CHANGELOG
 
-## [0.1.2] - 2025-12-30
-
-### 🔄 Changed
-
-- Changelog refactoring
-
-### 📦 Native SDK Versions
-
-| Platform | SDK                  | Version |
-| -------- | -------------------- | ------- |
-| Android  | checkout-android     | 0.4.8   |
-| iOS      | checkout-ios-package | 0.0.67  |
-
----
-
-## [0.1.1] - 2025-12-30
+## [0.2.0] - 2025-12-31
 
 ### ✨ Added
 
 - Recaching CVV
 - Retaining CVV
-- App UI improvements
 
 ### 📦 Native SDK Versions
 
