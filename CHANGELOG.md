@@ -1,3 +1,38 @@
+## [0.2.1] - 2026-01-28
+
+### ✨ Added
+
+  - Test coverage improved
+
+### 🐛 Fixed
+
+  - Dependabot fixes, lint warnings fixes and customField refactoring
+  - Integration workflow detox dep fix
+  - Archieve xcode fix
+  - Console and debugger restriction to prod
+  - Dark theme android and testcases
+  - E2e failure fix
+
+### 🔄 Changed
+
+  - Feat/HC-1138 Empty expiry date switch
+  - Fix/bugs
+  - Fix/bugs
+  - Fix/bugs
+  - Fix/bugs
+  - Fix/3ds android
+  - Fix/HC-629: Dependabot alert fixes
+  - 3DS Implementation
+  - Fix/changelog refactoring
+
+### 📦 Native SDK Versions
+
+| Platform | SDK                  | Version |
+| -------- | -------------------- | ------- |
+| Android  | checkout-android     | unknown |
+| iOS      | checkout-ios-package | 1.0.11 |
+
+---
 # CHANGELOG
 
 ## [0.2.0] - 2025-12-31
