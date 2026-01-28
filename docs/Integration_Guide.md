@@ -30,13 +30,14 @@ See the complete [Security Integration Checklist](#-security-integration-checkli
 2. [Installation](#installation)
 3. [Quick Start](#quick-start)
 4. [Express Checkout Integration](#express-checkout-integration)
-5. [Hosted Fields Integration](#hosted-fields-integration)
-6. [Advanced Configuration](#advanced-configuration)
-7. [Payment Result Handling](#payment-result-handling)
-8. [Error Handling](#error-handling)
-9. [Customization](#customization)
-10. [API Reference](#api-reference)
-11. [Best Practices](#best-practices)
+5. [3DS Challenge Integration](#3ds-challenge-integration)
+6. [Hosted Fields Integration](#hosted-fields-integration)
+7. [Advanced Configuration](#advanced-configuration)
+8. [Payment Result Handling](#payment-result-handling)
+9. [Error Handling](#error-handling)
+10. [Customization](#customization)
+11. [API Reference](#api-reference)
+12. [Best Practices](#best-practices)
     - [Security Best Practices](#security-best-practices)
       - [API Key & Environment Key Security](#1-api-key-and-environment-key-security)
       - [Mobile App Security](#2-mobile-app-security) (Screenshot Prevention, Screen Recording)
@@ -44,9 +45,9 @@ See the complete [Security Integration Checklist](#-security-integration-checkli
       - [Security Integration Checklist](#-security-integration-checklist)
     - [Performance Best Practices](#performance-best-practices)
     - [UX Best Practices](#ux-best-practices)
-12. [Troubleshooting](#troubleshooting)
-13. [Comprehensive Troubleshooting Checklist](#comprehensive-troubleshooting-checklist)
-14. [Examples Documentation](./Examples.md)
+13. [Troubleshooting](#troubleshooting)
+14. [Comprehensive Troubleshooting Checklist](#comprehensive-troubleshooting-checklist)
+15. [Examples Documentation](./Examples.md)
 
 ---
 
@@ -149,6 +150,33 @@ The Environment Key is a unique identifier for your Spreedly environment that's 
 ```bash
 # .env file (add to .gitignore)
 SPREEDLY_ENVIRONMENT_KEY=test_your_environment_key_here
+FORTER_SITE_ID=your_forter_site_id_here  # Leave empty or omit if not using Forter
+```
+
+### Forter Integration (Optional)
+
+**What is Forter?**
+
+Forter is an AI-powered fraud prevention platform that helps protect against payment fraud. The Spreedly SDK supports optional Forter integration for enhanced fraud detection.
+
+**How to Get Your Forter Site ID:**
+
+1. **Contact Forter**: If you're a Forter customer, your Site ID will be provided by your Forter representative
+2. **Sandbox vs. Production**: Use sandbox Site ID for testing, production Site ID for live transactions
+3. **Configuration**: Add the Site ID to your `.env` file
+
+**When to Use Forter Integration:**
+
+- ✅ If you have an existing Forter account
+- ✅ When you need advanced fraud detection
+- ✅ For high-value transactions requiring additional protection
+
+**If Not Using Forter:**
+
+Pass an empty string for `forterSiteId`:
+
+```typescript
+forterSiteId: '', // Required parameter, use empty string if not using Forter
 ```
 
 ### Authentication Parameters from Backend
@@ -164,7 +192,7 @@ SPREEDLY_ENVIRONMENT_KEY=test_your_environment_key_here
 
 **Backend Implementation Required:**
 
-Your backend must implement an endpoint (commonly `/api/auth/get-auth-params`) that:
+Your backend must implement an endpoint (commonly `/api/v1/auth/params`) that:
 
 1. **Generates a unique nonce** for each request
 2. **Creates an HMAC signature** using your Spreedly secret key
@@ -187,16 +215,13 @@ Your backend must implement an endpoint (commonly `/api/auth/get-auth-params`) t
 ```typescript
 // Fetch fresh auth params from your backend
 const fetchAuthParams = async () => {
-  const response = await fetch(
-    'https://your-backend.com/api/auth/get-auth-params',
-    {
-      method: 'GET',
-      headers: {
-        'Authorization': 'Bearer your_user_token',
-        'Content-Type': 'application/json',
-      },
-    }
-  );
+  const response = await fetch('https://your-backend.com/api/v1/auth/params', {
+    method: 'GET',
+    headers: {
+      'Authorization': 'Bearer your_user_token',
+      'Content-Type': 'application/json',
+    },
+  });
 
   if (!response.ok) {
     throw new Error('Failed to fetch auth params');
@@ -216,6 +241,7 @@ const initializeSpreedly = async () => {
     certificateToken: authParams.certificateToken,
     timestamp: authParams.timestamp.toString(),
     environmentKey: process.env.SPREEDLY_ENVIRONMENT_KEY, // From Spreedly
+    forterSiteId: process.env.FORTER_SITE_ID || '', // Empty string if not using Forter
   });
 };
 ```
@@ -482,7 +508,7 @@ cd ..
 buildscript {
     ext {
         buildToolsVersion = "35.0.0"
-        minSdkVersion = 24
+        minSdkVersion = 26
         compileSdkVersion = 35
         targetSdkVersion = 34
         ndkVersion = "27.1.12297006"
@@ -732,6 +758,7 @@ export function App() {
           certificateToken: authParams.certificateToken,
           timestamp: authParams.timestamp.toString(),
           environmentKey: process.env.SPREEDLY_ENVIRONMENT_KEY, // From Spreedly
+          forterSiteId: process.env.FORTER_SITE_ID || '', // Empty string if not using Forter
         };
 
         await SpreedlyCore.initSdk(options);
@@ -758,7 +785,7 @@ export function App() {
 
 // Helper function to fetch auth params from your backend
 const fetchAuthParams = async () => {
-  const response = await fetch('https://your-backend.com/api/auth/get-auth-params');
+  const response = await fetch('https://your-backend.com/api/v1/auth/params');
   if (!response.ok) {
     throw new Error('Failed to fetch auth params');
   }
@@ -906,6 +933,325 @@ SpreedlyCore.paymentBottomSheet({
 - Component-level theming
 - Pre-built theme examples
 - Platform-specific behavior
+
+---
+
+## 3DS Challenge Integration
+
+The Spreedly SDK provides built-in support for 3D Secure (3DS) authentication, which adds an additional layer of security for card-not-present transactions. The SDK handles the entire 3DS challenge UI and flow - your application only needs to initiate the purchase on your backend and trigger the SDK's challenge presentation.
+
+**When to Use 3DS:**
+
+- **Regulatory Compliance**: SCA (Strong Customer Authentication) requirements in Europe
+- **Fraud Reduction**: Shift liability for fraudulent transactions to the card issuer
+- **Higher Authorization Rates**: Banks may approve more transactions with 3DS verification
+- **Customer Trust**: Visual security indicators increase checkout confidence
+
+**3DS Flow Overview:**
+
+```
+┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
+│  Your App       │     │  Your Backend   │     │  Spreedly API   │
+│                 │     │                 │     │                 │
+│  1. User taps   │────>│  2. Process     │────>│  3. Returns     │
+│     "Pay"       │     │     Purchase    │     │     tokens      │
+│                 │<────│                 │<────│                 │
+│                 │     │                 │     │                 │
+│  4. Call SDK    │     │                 │     │                 │
+│     showThreeDS │     │                 │     │                 │
+│     Challenge() │     │                 │     │                 │
+│                 │     │                 │     │                 │
+│  ┌───────────┐  │     │                 │     │                 │
+│  │ SDK 3DS   │  │     │                 │     │                 │
+│  │ Challenge │  │     │                 │     │                 │
+│  │ UI        │  │     │                 │     │                 │
+│  └───────────┘  │     │                 │     │                 │
+│                 │     │                 │     │                 │
+│  5. Listen for  │     │                 │     │                 │
+│     result      │     │                 │     │                 │
+│     event       │     │                 │     │                 │
+└─────────────────┘     └─────────────────┘     └─────────────────┘
+```
+
+**Key Responsibilities:**
+
+| Component        | Responsibility                                                 |
+| ---------------- | -------------------------------------------------------------- |
+| **Your Backend** | Process purchase via Spreedly API, return tokens               |
+| **Your App**     | Initiate purchase, trigger 3DS challenge, handle result        |
+| **Spreedly SDK** | Display 3DS challenge UI, handle user interaction, emit result |
+
+### Basic 3DS Integration
+
+```typescript
+import React, { useEffect, useState } from 'react';
+import { View, Button, Alert, Text, ActivityIndicator } from 'react-native';
+import {
+  SpreedlyCore,
+  SpreedlyEventEmitter,
+  SpreedlyEventTypes,
+  type ThreeDSChallengeResult,
+} from '@spreedly/react-native-checkout';
+
+export function ThreeDSCheckout() {
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [paymentResult, setPaymentResult] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Listen for 3DS challenge results from the SDK
+    const subscription = SpreedlyEventEmitter.addListener(
+      SpreedlyEventTypes.THREE_DS_CHALLENGE_RESULT,
+      (result: ThreeDSChallengeResult) => {
+        switch (result.status) {
+          case 'success':
+            console.log('3DS Challenge successful', result.transactionId);
+            setPaymentResult('Payment completed successfully!');
+            setErrorMessage(null);
+            // Optionally notify your backend of successful authentication
+            break;
+
+          case 'failed':
+            console.log('3DS Challenge failed:', result.message);
+            setPaymentResult(null);
+            setErrorMessage(result.message || '3DS verification failed');
+            break;
+        }
+        setIsProcessing(false);
+      }
+    );
+
+    // Cleanup subscription on unmount
+    return () => {
+      subscription.remove();
+    };
+  }, []);
+
+  const handleCheckout = async () => {
+    setIsProcessing(true);
+    setErrorMessage(null);
+    setPaymentResult(null);
+
+    try {
+      // Step 1: Call YOUR backend to process the purchase
+      // This is the ONLY part that happens on your server
+      const purchaseResult = await processPurchaseOnBackend({
+        paymentMethodToken: 'pm_xxx', // Token from createCreditCard or saved payment method
+        amount: 9999, // Amount in cents
+        currencyCode: 'USD',
+      });
+
+      // Step 2: Extract tokens from your backend response
+      const { managedOrderToken, transactionToken } = purchaseResult;
+
+      if (managedOrderToken && transactionToken) {
+        // Step 3: Show 3DS challenge using the SDK
+        // The SDK handles all the 3DS UI and flow automatically
+        SpreedlyCore.showThreeDSChallenge(managedOrderToken, transactionToken);
+      } else {
+        setErrorMessage('Missing required tokens for 3DS challenge');
+        setIsProcessing(false);
+      }
+    } catch (error) {
+      console.error('Error processing purchase:', error);
+      setErrorMessage((error as Error).message || 'Failed to process purchase');
+      setIsProcessing(false);
+    }
+  };
+
+  return (
+    <View style={{ padding: 20 }}>
+      <Button
+        title={isProcessing ? 'Processing...' : 'Pay Now'}
+        onPress={handleCheckout}
+        disabled={isProcessing}
+      />
+
+      {isProcessing && <ActivityIndicator style={{ marginTop: 20 }} />}
+
+      {paymentResult && (
+        <Text style={{ marginTop: 20, color: 'green' }}>{paymentResult}</Text>
+      )}
+
+      {errorMessage && (
+        <Text style={{ marginTop: 20, color: 'red' }}>{errorMessage}</Text>
+      )}
+    </View>
+  );
+}
+
+// Example backend API call - implement according to your backend
+async function processPurchaseOnBackend(params: {
+    paymentMethodToken: string;
+    amount: number;
+    currencyCode: string;
+  }): Promise<{ managedOrderToken: string | null; transactionToken: string | null }> {
+    const { paymentMethodToken, amount, currencyCode } = params;
+
+    // Build request body with snake_case field names as expected by API
+    const requestBody = {
+      amount: amount,
+      currency_code: currencyCode,
+      payment_method_token: paymentMethodToken,
+    };
+
+    try {
+      const response = await fetch(
+        'https://your-backend.com/api/purchase',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          },
+          body: JSON.stringify(requestBody),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        const error = new Error(
+          data.errors?.[0]?.message || 'Purchase request failed'
+        );
+        throw error;
+      }
+
+      // Extract tokens from the response
+      const managedOrderToken =
+        data?.transaction?.sca_authentication?.managed_order_token ?? null;
+      const transactionToken = data?.transaction?.token ?? null;
+
+      return { managedOrderToken, transactionToken };
+    } catch (error) {
+      if (
+        error instanceof Error &&
+        !error.message.includes('Purchase request failed')
+      ) {
+        const enhancedError = new Error(
+          `Network error during purchase: ${error.message}`
+        );
+        throw enhancedError;
+      }
+      throw error;
+    }
+  }
+```
+
+### 3DS API Reference
+
+#### `SpreedlyCore.showThreeDSChallenge(managedOrderToken, transactionToken)`
+
+Displays the 3DS challenge UI to the user. The SDK handles all user interaction and emits a result event when complete.
+
+**Parameters:**
+
+| Parameter           | Type     | Description                                                           |
+| ------------------- | -------- | --------------------------------------------------------------------- |
+| `managedOrderToken` | `string` | The managed order token from your backend's Spreedly API response     |
+| `transactionToken`  | `string` | The transaction token from your backend's purchase/authorize response |
+
+**Example:**
+
+```typescript
+SpreedlyCore.showThreeDSChallenge(
+  'mot_abc123xyz789', // managedOrderToken from backend
+  'txn_def456uvw012' // transactionToken from backend
+);
+```
+
+#### `SpreedlyCore.hideThreeDSChallenge()`
+
+Programmatically dismisses the 3DS challenge UI. Use this for edge cases where you need to close the challenge (e.g., session timeout).
+
+**Example:**
+
+```typescript
+// Close challenge programmatically (use sparingly)
+SpreedlyCore.hideThreeDSChallenge();
+```
+
+#### `SpreedlyEventTypes.THREE_DS_CHALLENGE_RESULT`
+
+Event emitted when the 3DS challenge completes or fails.
+
+**Event Data Type: `ThreeDSChallengeResult`**
+
+```typescript
+type ThreeDSChallengeResult =
+  | { status: 'success'; transactionId?: string }
+  | { status: 'failed'; message?: string };
+```
+
+**Result Status Values:**
+
+| Status    | Description                             | Action                                         |
+| --------- | --------------------------------------- | ---------------------------------------------- |
+| `success` | 3DS verification completed successfully | Proceed with order fulfillment                 |
+| `failed`  | 3DS verification failed                 | Show error, allow retry or alternative payment |
+
+### Backend Integration Requirements
+
+Your backend must implement the purchase API endpoint that calls Spreedly's API and returns the required tokens:
+
+**Required Backend Response:**
+
+```json
+{
+  "managedOrderToken": "mot_abc123xyz789",
+  "transactionToken": "txn_def456uvw012"
+}
+```
+
+**Backend Implementation Notes:**
+
+1. **Use Spreedly's Purchase/Authorize API** with 3DS enabled
+2. **Extract `managed_order_token`** from the API response
+3. **Extract `transaction.token`** from the API response
+4. **Return both tokens** to your mobile app
+5. **Handle backend errors** gracefully and return appropriate error messages
+
+### Error Handling Best Practices
+
+```typescript
+useEffect(() => {
+  const subscription = SpreedlyEventEmitter.addListener(
+    SpreedlyEventTypes.THREE_DS_CHALLENGE_RESULT,
+    (result: ThreeDSChallengeResult) => {
+      switch (result.status) {
+        case 'success':
+          // ✅ Success - proceed with order
+          handlePaymentSuccess(result.transactionId);
+          break;
+
+        case 'failed':
+          // ❌ Failed - show user-friendly error
+          if (result.message?.includes('timeout')) {
+            showError('Verification timed out. Please try again.');
+          } else if (result.message?.includes('declined')) {
+            showError('Card verification failed. Please try a different card.');
+          } else {
+            showError(
+              result.message || 'Verification failed. Please try again.'
+            );
+          }
+          // Allow user to retry or choose different payment method
+          break;
+      }
+    }
+  );
+
+  return () => subscription.remove();
+}, []);
+```
+
+### Security Considerations for 3DS
+
+- **Never expose** Spreedly API credentials in your mobile app
+- **Always process purchases** through your secure backend
+- **Validate tokens** on your backend before using them
+- **Implement session timeouts** for incomplete 3DS flows
+- **Log 3DS events** for compliance and debugging (without sensitive data)
 
 ---
 
@@ -1906,6 +2252,7 @@ Initialize the SDK with authentication parameters.
 - `options.certificateToken: string` - Certificate token (duplicate for compatibility)
 - `options.timestamp: string` - Request timestamp
 - `options.environmentKey: string` - Spreedly environment key
+- `options.forterSiteId: string` - Forter site ID for fraud prevention integration (pass empty string `''` if not using Forter)
 
 #### `SpreedlyCore.createCreditCard(options: CreateCreditCardOptions): Promise<CreateCreditCardResult>`
 
@@ -1967,6 +2314,21 @@ Set global theme for all SDK components with optional dark mode support.
 #### `SpreedlyCore.setParam(parameter: ValidationParameter, value: boolean): void`
 
 Set global validation parameters.
+
+#### `SpreedlyCore.showThreeDSChallenge(managedOrderToken: string, transactionToken: string): void`
+
+Display the 3DS challenge UI to authenticate a transaction.
+
+**Parameters:**
+
+- `managedOrderToken: string` - Managed order token from your backend's Spreedly API response
+- `transactionToken: string` - Transaction token from your backend's purchase/authorize response
+
+**Usage:** See [3DS Challenge Integration](#3ds-challenge-integration) for complete implementation details.
+
+#### `SpreedlyCore.hideThreeDSChallenge(): void`
+
+Programmatically dismiss the 3DS challenge UI. Use sparingly for edge cases like session timeouts.
 
 ### Components
 
@@ -2080,6 +2442,36 @@ interface GlobalThemeOptions {
   theme?: BaseThemeConfig;
   darkTheme?: BaseThemeConfig;
 }
+```
+
+#### 3DS Challenge Types
+
+```typescript
+/**
+ * Status of a 3DS challenge operation
+ */
+type ThreeDSChallengeStatus = 'success' | 'failed';
+
+/**
+ * Result of a 3DS challenge operation.
+ * Emitted via the THREE_DS_CHALLENGE_RESULT event.
+ */
+type ThreeDSChallengeResult =
+  | { status: 'success'; transactionId?: string }
+  | { status: 'failed'; message?: string };
+```
+
+#### Event Types
+
+```typescript
+/**
+ * Available Spreedly event types for event listeners
+ */
+const SpreedlyEventTypes = {
+  PAYMENT_BOTTOM_SHEET_RESULT: 'onPaymentBottomSheetResult',
+  RECACHE_RESULT: 'onRecacheResult',
+  THREE_DS_CHALLENGE_RESULT: 'onThreeDSChallengeResult',
+} as const;
 ```
 
 ---
@@ -2749,6 +3141,7 @@ const options = {
   certificateToken: authParams.certificateToken,
   timestamp: authParams.timestamp.toString(), // Must be string
   environmentKey: process.env.SPREEDLY_ENVIRONMENT_KEY, // Must not be empty
+  forterSiteId: process.env.FORTER_SITE_ID || '', // Can be empty string if not using Forter
 };
 
 // Validate before init
