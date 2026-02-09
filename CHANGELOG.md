@@ -1,23 +1,37 @@
+## [0.2.5] - 2026-02-09
+
+### 📝 Changes
+
+No commits found for this version. This may be a version bump without code changes.
+
+### 📦 Native SDK Versions
+
+| Platform | SDK                  | Version |
+| -------- | -------------------- | ------- |
+| Android  | checkout-android     | unknown |
+| iOS      | checkout-ios-package | 1.0.15 |
+
+---
 # CHANGELOG
 
 ## [0.2.1] - 2026-01-28
 
 ### ✨ Added
 
-  - Empty expiry date switch
+- Empty expiry date switch
 
 ### 🐛 Fixed
 
-  - Test coverage improved
-  - Dependabot alerts fixed
-  - Integration workflow detox dependency fix
-  - Archieve xcode fix
-  - Console and debugger restriction to production
-  - Dark theme android fixed and testcases updated
+- Test coverage improved
+- Dependabot alerts fixed
+- Integration workflow detox dependency fix
+- Archieve xcode fix
+- Console and debugger restriction to production
+- Dark theme android fixed and testcases updated
 
 ### 🔄 Changed
 
-  - 3DS Implementation
+- 3DS Implementation
 
 ### 📦 Native SDK Versions
 
