@@ -1,18 +1,24 @@
+# CHANGELOG
+
 ## [0.2.5] - 2026-02-09
 
-### 📝 Changes
+### 🐛 Fixed
 
-No commits found for this version. This may be a version bump without code changes.
+  - Dependabot fix
+
+### 🔄 Changed
+
+  - Feat/hc 1030 3ds gateway
+  - Fix/documents review
 
 ### 📦 Native SDK Versions
 
 | Platform | SDK                  | Version |
 | -------- | -------------------- | ------- |
-| Android  | checkout-android     | unknown |
+| Android  | checkout-android     | 0.9.1 |
 | iOS      | checkout-ios-package | 1.0.15 |
 
 ---
-# CHANGELOG
 
 ## [0.2.1] - 2026-01-28
 

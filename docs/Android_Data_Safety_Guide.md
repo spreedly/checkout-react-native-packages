@@ -1,4 +1,4 @@
-# Android Data Safety Guide - Google Play Console Questionnaire
+# Android Data Safety Guide
 
 **Version:** 1.0  
 **Last Updated:** November 2025  
@@ -502,15 +502,6 @@ For questions about SDK data practices:
 
 - **Spreedly Support**: https://www.spreedly.com/support
 - **Documentation**: https://docs.spreedly.com
-
----
-
-## Section 14: Version History
-
-| Version | Date          | Changes                                              |
-| ------- | ------------- | ---------------------------------------------------- |
-| 1.0     | January 2025  | Initial format-specific Android Data Safety guide    |
-| 1.1     | November 2025 | Enhanced checklists with detailed verification steps |
 
 ---
 
