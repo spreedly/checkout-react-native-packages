@@ -61,41 +61,25 @@ export function PaymentForm() {
 
 ### Integration Guides
 
-- **[Integration Guide](docs/Integration_Guide.md)** - Complete integration walkthrough
-- **[Examples](docs/Examples.md)** - Code examples and use cases
-- **[Theme Guide](docs/Theme_Guide.md)** - Theme customization and dark mode support
-- **[React Native 0.76 Requirements](docs/RN_076_Requirement.md)** - Version-specific requirements
+- **[Integration Guide](docs/guides/Integration_Guide.md)** - Complete integration walkthrough
+- **[Theme Guide](docs/guides/Theme_Guide.md)** - Theme customization and dark mode support
+- **[React Native 0.76 Requirements](docs/guides/RN_076_Requirement.md)** - Version-specific requirements
 
 ### Privacy & Security
 
-- **[Security Policy](docs/Security.md)** - Security vulnerability reporting and policy
-- **[Unified Privacy](docs/Unified_Privacy.md)** - Comprehensive privacy documentation
-- **[Platform Privacy Requirements](docs/Platform_Privacy_Requirements.md)** - Privacy requirements across platforms
-- **[iOS Privacy Guide](docs/iOS_Privacy_Guide.md)** - iOS-specific privacy setup
-- **[Android Data Safety Guide](docs/Android_Data_Safety_Guide.md)** - Android Data Safety form requirements
-- **[Source Maps Security Guide](docs/Source_Maps_Security_Guide.md)** - Secure source maps configuration
-
-### Platform-Specific Guides
-
-- **[Android Lint Troubleshooting](docs/Android_Lint_Troubleshooting.md)** - Android-specific issues and troubleshooting
-- **[Xcode Cloud](docs/Xcode_Cloud.md)** - Xcode Cloud integration guide
-
-### Development & Testing
-
-- **[Unit Testing](docs/Unit_Testing.md)** - Testing guide and best practices
-
-### Distribution
-
-- **[App Distribution Guide](docs/App_Distribution_Guide.md)** - App distribution and release process
-- **[GitHub Private Release Guide](docs/GitHub_Private_Release_Guide.md)** - GitHub private release setup
+- **[Security Policy](docs/guides/Security.md)** - Security vulnerability reporting and policy
+- **[Unified Privacy](docs/guides/Unified_Privacy.md)** - Comprehensive privacy documentation
+- **[iOS Privacy Guide](docs/guides/iOS_Privacy_Guide.md)** - iOS-specific privacy setup
+- **[Android Data Safety Guide](docs/guides/Android_Data_Safety_Guide.md)** - Android Data Safety form requirements
+- **[Source Maps Security Guide](docs/guides/Source_Maps_Security_Guide.md)** - Secure source maps configuration
 
 ### Troubleshooting
 
-- **[Common Issues](docs/Integration_Guide.md#troubleshooting)** - General troubleshooting guide
+- **[Common Issues](docs/guides/Integration_Guide.md#troubleshooting)** - General troubleshooting guide
 
 ### Version History
 
-- **[CHANGELOG.md](CHANGELOG.md)** - Detailed version history and release notes
+- **[CHANGELOG.md](docs/CHANGELOG.md)** - Detailed version history and release notes
 
 ## 🔧 Compatibility
 
@@ -107,7 +91,7 @@ export function PaymentForm() {
 
 ## 📋 Version History
 
-For a detailed list of changes, new features, bug fixes, and updates between versions, please refer to our [CHANGELOG.md](CHANGELOG.md). The changelog provides comprehensive information about:
+For a detailed list of changes, new features, bug fixes, and updates between versions, please refer to our [CHANGELOG.md](docs/CHANGELOG.md). The changelog provides comprehensive information about:
 
 - **New Features**: Added functionality and enhancements
 - **Bug Fixes**: Resolved issues and improvements
@@ -153,7 +137,7 @@ Secure, PCI-compliant input components that handle sensitive payment data:
 
 ### 1. Installation and Setup
 
-Follow our comprehensive [Integration Guide](docs/Integration_Guide.md) for step-by-step setup instructions.
+Follow our comprehensive [Integration Guide](docs/guides/Integration_Guide.md) for step-by-step setup instructions.
 
 ### 2. Configuration
 
