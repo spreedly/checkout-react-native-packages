@@ -3,31 +3,24 @@
 ### 🐛 Fixed
 
   - Dependabot codeql vulnerablities fix
-  - Stripe crash fix
-  - Stripe APM Crash fix for iOS
-  - Integration workflow
+  - DataDog sdkPlatform logging added
+  - Workflows optimized
+  - PCI Compliant audit and related fixes
 
 ### 🔄 Changed
 
-  - Latest react native version support
-  - Fix: Workflows optimized
-  - Fix: Workflow optimizations
-  - Fix: DataDog sdkPlatform logging added
-  - Android iOS version bump
-  - Fix: PCI Compliant audit and related fixes
-  - Fix: RN old versions stablity
-  - Fix: Stripe android button stuck fix
-  - Documentations refactoring
-  - HC 1035 Braintree payment integration
-  - HC-1033 stripe apm
-  - HC 1034 ebanx payments
-  - HC-1032 Offsite payments
+  - latest react native version support added
+  - documentations refactoring
+  - braintree payment integration
+  - stripe apm
+  - ebanx payments
+  - Offsite payments
 
 ### 📦 Native SDK Versions
 
 | Platform | SDK                  | Version |
 | -------- | -------------------- | ------- |
-| Android  | checkout-android     | unknown |
+| Android  | checkout-android     | 0.12.1 |
 | iOS      | checkout-ios-package | 1.2.2 |
 
 ---

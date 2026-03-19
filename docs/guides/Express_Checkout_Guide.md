@@ -49,6 +49,8 @@ import {
   SpreedlyCore,
   SpreedlyEventEmitter,
   SpreedlyEventTypes,
+  YearFormat,
+  NameDisplayMode,
   mapPaymentResult,
 } from '@spreedly/react-native-checkout';
 
@@ -72,7 +74,7 @@ useEffect(() => {
 // 2. Trigger payment
 const showPayment = () => {
   SpreedlyCore.paymentBottomSheet({
-    yearFormat: '4',
+    yearFormat: YearFormat.TwoDigit,
   });
 };
 ```
@@ -92,6 +94,8 @@ import {
   SpreedlyCore,
   SpreedlyEventEmitter,
   SpreedlyEventTypes,
+  YearFormat,
+  NameDisplayMode,
   mapPaymentResult,
   type PaymentResultRN,
 } from '@spreedly/react-native-checkout';
@@ -161,8 +165,8 @@ const handlePaymentPress = () => {
   SpreedlyCore.paymentBottomSheet({
     allowBlankName: false,
     allowExpiredDate: false,
-    yearFormat: '4',
-    nameDisplayMode: 'singleField',
+    yearFormat: YearFormat.FourDigit,
+    nameDisplayMode: NameDisplayMode.SeparateFields,
   });
 };
 
@@ -181,14 +185,14 @@ return (
 
 ### PaymentBottomSheetOptions
 
-| Property           | Type                                | Default         | Description                              |
-| ------------------ | ----------------------------------- | --------------- | ---------------------------------------- |
-| `allowBlankName`   | `boolean`                           | `false`         | Allow submission without cardholder name |
-| `allowExpiredDate` | `boolean`                           | `false`         | Allow expired cards (for testing)        |
-| `yearFormat`       | `'2' \| '4'`                        | `'4'`           | Year format for expiry (YY or YYYY)      |
-| `nameDisplayMode`  | `'singleField' \| 'separateFields'` | `'singleField'` | Show name as one field or first/last     |
-| `theme`            | `BaseThemeConfig`                   | SDK default     | Light mode theme                         |
-| `darkTheme`        | `BaseThemeConfig`                   | SDK default     | Dark mode theme                          |
+| Property           | Type              | Default                         | Description                              |
+| ------------------ | ----------------- | ------------------------------- | ---------------------------------------- |
+| `allowBlankName`   | `boolean`         | `false`                         | Allow submission without cardholder name |
+| `allowExpiredDate` | `boolean`         | `false`                         | Allow expired cards (for testing)        |
+| `yearFormat`       | `YearFormat`      | `YearFormat.FourDigit`          | Year format for expiry (YY or YYYY)      |
+| `nameDisplayMode`  | `NameDisplayMode` | `NameDisplayMode.SeperateField` | Show name as one field or first/last     |
+| `theme`            | `BaseThemeConfig` | SDK default                     | Light mode theme                         |
+| `darkTheme`        | `BaseThemeConfig` | SDK default                     | Dark mode theme                          |
 
 ### Configuration Examples
 
@@ -196,8 +200,8 @@ return (
 
 ```typescript
 SpreedlyCore.paymentBottomSheet({
-  yearFormat: '4',
-  nameDisplayMode: 'singleField',
+  yearFormat: YearFormat.TwoDigit,
+  nameDisplayMode: NameDisplayMode.SeparateFields,
   allowBlankName: false,
   allowExpiredDate: false,
 });
@@ -207,7 +211,7 @@ SpreedlyCore.paymentBottomSheet({
 
 ```typescript
 SpreedlyCore.paymentBottomSheet({
-  yearFormat: '4',
+  yearFormat: YearFormat.TwoDigit,
   theme: {
     primaryColor: '#6366F1',
     secondaryColor: '#8B5CF6',
@@ -231,7 +235,7 @@ SpreedlyCore.paymentBottomSheet({
 });
 ```
 
-For complete theming documentation, see [Theme_Guide.md](./Theme_Guide.md).
+For complete theming documentation, see [theme_guide.md](./theme_guide.md).
 
 ---
 
@@ -413,7 +417,7 @@ Declined: 4000 0000 0000 0002
 
 - 📖 [Spreedly API Documentation](https://docs.spreedly.com/)
 - 💻 Example: `example/src/screens/expressCheckout/ExpressCheckout.tsx`
-- 🎨 Theming: See [Theme_Guide.md](./Theme_Guide.md)
+- 🎨 Theming: See [theme_guide.md](./theme_guide.md)
 - ⚙️ Requires React Native 0.76+
 
 ---

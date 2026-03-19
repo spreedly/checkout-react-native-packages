@@ -40,7 +40,7 @@ Spreedly React Native SDK requires **React Native 0.76 or higher**.
 
 **Android:**
 
-- minSdkVersion: 24 (Android 7.0)
+- minSdkVersion: 26 (Android 8.0)
 - targetSdkVersion: 34
 - Kotlin: 2.0.21
 - NDK: 27.1.12297006
@@ -86,4 +86,4 @@ Spreedly React Native SDK requires **React Native 0.76 or higher**.
 ---
 
 **Document Version:** 1.0  
-**Last Updated:** October 2025
+**Last Updated:** March 2026
