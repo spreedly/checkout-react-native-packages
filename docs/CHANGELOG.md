@@ -1,3 +1,5 @@
+# CHANGELOG
+
 ## [0.3.0] - 2026-03-19
 
 ### 🐛 Fixed
@@ -24,7 +26,6 @@
 | iOS      | checkout-ios-package | 1.2.2 |
 
 ---
-# CHANGELOG
 
 ## [0.2.5] - 2026-02-09
 
