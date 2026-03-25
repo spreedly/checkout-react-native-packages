@@ -902,15 +902,15 @@ Integrating 3DS requires these key steps:
 - 📖 [Spreedly API Documentation](https://docs.spreedly.com/)
 - 💻 Review the example app in `example/src/screens/threeDsScreen/ThreeDsScreen.tsx`
 - 🔍 Check console for error messages and warnings
-- ⚙️ Ensure React Native version 0.76+ is installed
+- ⚙️ Ensure React Native version 0.77+ is installed
 
 **Related Guides:**
 
-- [Integration Guide](./Integration_Guide.md) - Full SDK integration
-- [CVV Recaching Guide](./CVV_Recaching_Guide.md) - Update saved card CVV
-- [Theme Guide](./Theme_Guide.md) - Customize SDK appearance
-- [Security Guide](./Security.md) - Security best practices
+- [Integration Guide](./integration_guide.md) - Full SDK integration
+- [CVV Recaching Guide](./cvv_recaching_guide.md) - Update saved card CVV
+- [Theme Guide](./theme_guide.md) - Customize SDK appearance
+- [Security Guide](./security.md) - Security best practices
 
 ---
 
-**Last Updated**: January 8, 2026
+**Last Updated**: March 2026

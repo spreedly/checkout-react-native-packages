@@ -235,7 +235,7 @@ SpreedlyCore.paymentBottomSheet({
 });
 ```
 
-For complete theming documentation, see [theme_guide.md](./theme_guide.md).
+For complete theming documentation, see [Theme Guide](./theme_guide.md).
 
 ---
 
@@ -417,7 +417,7 @@ Declined: 4000 0000 0000 0002
 
 - 📖 [Spreedly API Documentation](https://docs.spreedly.com/)
 - 💻 Example: `example/src/screens/expressCheckout/ExpressCheckout.tsx`
-- 🎨 Theming: See [theme_guide.md](./theme_guide.md)
-- ⚙️ Requires React Native 0.76+
+- 🎨 Theming: See [Theme Guide](./theme_guide.md)
+- ⚙️ Requires React Native 0.77+
 
 ---

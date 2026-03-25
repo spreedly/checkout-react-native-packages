@@ -1,7 +1,7 @@
 # Android Data Safety Guide
 
 **Version:** 1.0  
-**Last Updated:** November 2025  
+**Last Updated:** March 2026
 **Purpose:** Format-specific requirements for Google Play Console Data Safety section
 
 ## Overview
@@ -487,8 +487,8 @@ Security Practices:
 
 ### Related Documentation
 
-- [Unified Privacy Policy](Unified_Privacy.md) - Complete privacy practices
-- [Integration Guide](Integration_Guide.md) - SDK integration details
+- [Unified Privacy Policy](unified_privacy.md) - Complete privacy practices
+- [Integration Guide](integration_guide.md) - SDK integration details
 - [Spreedly Privacy Policy](https://www.spreedly.com/privacy) - Third-party privacy practices
 
 ### Google Play Resources

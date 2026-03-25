@@ -143,4 +143,4 @@ const darkTheme = {
 
 ---
 
-_For SDK integration, see [Integration Guide](./Integration_Guide.md)._
+_For SDK integration, see [Integration Guide](./integration_guide.md)._

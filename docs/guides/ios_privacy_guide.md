@@ -1,7 +1,7 @@
 # iOS Privacy Requirements Guide
 
 **Version:** 2.0  
-**Last Updated:** November 2025
+**Last Updated:** March 2026
 
 Complete guide for iOS privacy compliance when using the Spreedly SDK.
 
@@ -129,7 +129,7 @@ If storing payment tokens:
 
 ## Resources
 
-- [Unified Privacy Policy](Unified_Privacy.md) - Complete practices
+- [Unified Privacy Policy](unified_privacy.md) - Complete practices
 - [Apple Privacy Labels](https://developer.apple.com/app-store/app-privacy-details/)
 - [Privacy Manifests](https://developer.apple.com/documentation/bundleresources/privacy_manifests)
 

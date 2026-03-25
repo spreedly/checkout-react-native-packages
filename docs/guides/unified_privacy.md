@@ -1,7 +1,7 @@
 # Privacy Policy - Spreedly React Native SDK
 
 **Version:** 1.0  
-**Last Updated:** October 31, 2025
+**Last Updated:** March 2026
 
 ## Overview
 
@@ -52,12 +52,12 @@ The Spreedly Checkout React Native SDK processes payment card information withou
 
 - No special permissions required
 - Privacy manifest included (`PrivacyInfo.xcprivacy`)
-- See [iOS Privacy Guide](iOS_Privacy_Guide.md) for App Store requirements
+- See [iOS Privacy Guide](ios_privacy_guide.md) for App Store requirements
 
 ### Android
 
 - No special permissions required
-- See [Android Data Safety Guide](Android_Data_Safety_Guide.md) for Play Store requirements
+- See [Android Data Safety Guide](android_data_safety_guide.md) for Play Store requirements
 
 ## Developer Responsibilities
 

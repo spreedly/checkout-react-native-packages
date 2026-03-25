@@ -30,14 +30,13 @@ See the complete [Security Integration Checklist](#-security-integration-checkli
 2. [Installation](#installation)
 3. [Quick Start](#quick-start)
 4. [Express Checkout Integration](#express-checkout-integration)
-5. [3DS Challenge](#3ds-challenge)
-6. [Hosted Fields Integration](#hosted-fields-integration)
-7. [Advanced Configuration](#advanced-configuration)
-8. [Payment Result Handling](#payment-result-handling)
-9. [Error Handling](#error-handling)
-10. [Customization](#customization)
-11. [API Reference](#api-reference)
-12. [Best Practices](#best-practices)
+5. [Hosted Fields Integration](#hosted-fields-integration)
+6. [Advanced Configuration](#advanced-configuration)
+7. [Payment Result Handling](#payment-result-handling)
+8. [Error Handling](#error-handling)
+9. [Customization](#customization)
+10. [API Reference](#api-reference)
+11. [Best Practices](#best-practices)
     - [Security Best Practices](#security-best-practices)
       - [API Key & Environment Key Security](#1-api-key-and-environment-key-security)
       - [Mobile App Security](#2-mobile-app-security) (Screenshot Prevention, Screen Recording)
@@ -45,8 +44,8 @@ See the complete [Security Integration Checklist](#-security-integration-checkli
       - [Security Integration Checklist](#-security-integration-checklist)
     - [Performance Best Practices](#performance-best-practices)
     - [UX Best Practices](#ux-best-practices)
-13. [Troubleshooting](#troubleshooting)
-14. [Comprehensive Troubleshooting Checklist](#comprehensive-troubleshooting-checklist)
+12. [Troubleshooting](#troubleshooting)
+13. [Comprehensive Troubleshooting Checklist](#comprehensive-troubleshooting-checklist)
 
 ---
 
@@ -88,12 +87,12 @@ After receiving repository access, you'll need:
 
 The Spreedly SDK requires modern React Native versions to leverage the latest security features, performance improvements, and native module architecture enhancements essential for payment processing.
 
-- **React Native**: 0.76+ (recommended 0.79+)
+- **React Native**: 0.77+ (recommended 0.79+)
   - **Required for**: New Architecture support, improved native module performance, and security patches
-  - **0.76+**: Minimum version with stable Fabric/TurboModules support
+  - **0.77+**: Minimum version with Kotlin 2.0.21 and stable Fabric/TurboModules support
   - **0.79+**: Recommended for latest security updates and performance optimizations
 - **React**: 19.x
-  - **Required for**: React Native 0.76+ compatibility and modern hook implementations
+  - **Required for**: React Native 0.77+ compatibility and modern hook implementations
   - **Concurrent Features**: Enables better performance for payment form interactions
 - **Node.js**: 18+
   - **Required for**: Modern JavaScript features, better package resolution, and build tooling
@@ -109,7 +108,7 @@ The Spreedly SDK requires modern React Native versions to leverage the latest se
 
 - Minimum SDK: 26
 - Target SDK: 34
-- Compile SDK: 35
+- Compile SDK: 36
 - NDK: 27.1.12297006
 - **Kotlin**: 2.0.21+ (required for compatibility)
 - **Android Gradle Plugin**: 8.7.2+ (required for Kotlin 2.0.21+)
@@ -427,6 +426,9 @@ post_install do |installer|
     config[:reactNativePath],
     :mac_catalyst_enabled => false
   )
+
+  # 3. ADD THIS CALL to fix non-modular header issues with New Architecture
+  spreedly_post_install(installer)
 end
 ```
 
@@ -434,8 +436,9 @@ end
 
 - **Line 1**: Loads the Spreedly setup script that configures access to private iOS dependencies
 - **Line 2**: Initializes Spreedly-specific CocoaPods that are required for the SDK to function
+- **Line 3**: Fixes non-modular header build errors when using React Native New Architecture with CocoaPods frameworks
 
-**⚠️ Important**: Don't replace your entire Podfile - just add these two lines to your existing configuration.
+**⚠️ Important**: Don't replace your entire Podfile - just add these three lines to your existing configuration.
 
 #### Install Pods
 
@@ -508,7 +511,7 @@ buildscript {
     ext {
         buildToolsVersion = "35.0.0"
         minSdkVersion = 26
-        compileSdkVersion = 35
+        compileSdkVersion = 36
         targetSdkVersion = 34
         ndkVersion = "27.1.12297006"
 
@@ -527,15 +530,15 @@ buildscript {
 
 - **Kotlin 2.0.21+**: The Spreedly SDK uses modern Kotlin features and Compose integration
 - **Android Gradle Plugin 8.7.2+**: Required for Kotlin 2.0.21+ compatibility
-- **NDK 27.1.12297006**: Required for React Native 0.76+ native module compilation
+- **NDK 27.1.12297006**: Required for React Native 0.77+ native module compilation
 
 **Version Compatibility Matrix:**
 
-| React Native | Kotlin  | Android Gradle Plugin | Gradle | Status                 |
-| ------------ | ------- | --------------------- | ------ | ---------------------- |
-| 0.76+        | 2.0.21+ | 8.7.2+                | 8.9+   | ✅ **Supported**       |
-| 0.75         | 1.9.25  | 8.5.2                 | 8.8    | ⚠️ **Not Recommended** |
-| 0.72-0.74    | 1.8.x   | 8.x                   | 8.x    | ❌ **Not Supported**   |
+| React Native | Kotlin  | Android Gradle Plugin | Gradle | Status                                         |
+| ------------ | ------- | --------------------- | ------ | ---------------------------------------------- |
+| 0.77+        | 2.0.21+ | 8.7.2+                | 8.9+   | ✅ **Supported**                               |
+| 0.76         | 1.9.25  | 8.7.2+                | 8.9+   | ❌ **Not Supported** (Kotlin version mismatch) |
+| 0.75         | 1.9.25  | 8.5.2                 | 8.8    | ❌ **Not Supported**                           |
 
 ⚠️ **Important**: If you're upgrading from an older React Native version, you must update all these versions together to avoid compatibility issues.
 
@@ -794,663 +797,17 @@ const fetchAuthParams = async () => {
 
 ## Express Checkout Integration
 
-The Express Checkout provides a pre-built payment form with minimal integration effort, designed for rapid deployment and consistent user experience across different apps.
+Express Checkout provides a pre-built payment form with minimal integration effort. For full documentation, examples, and theme customization, see the **[Express Checkout Guide](./express_checkout_guide.md)**.
 
-**When to Use Express Checkout:**
-
-- **Rapid Prototyping**: Get a payment flow up and running quickly for demos or MVPs
-- **Standard Checkout Flow**: When your payment requirements align with common e-commerce patterns
-- **Minimal Customization Needed**: When the default UI and behavior meet your needs
-- **Team Efficiency**: Reduce development time and focus on core business logic
-- **Consistent UX**: Leverage Spreedly's tested and optimized payment experience
-
-**Express Checkout Features:**
-
-- ✅ **Pre-built UI Components**: Card number, expiry, CVV, and name fields with built-in validation
-- ✅ **Responsive Design**: Automatically adapts to different screen sizes and orientations
-- ✅ **Accessibility Support**: Full VoiceOver/TalkBack support and keyboard navigation
-- ✅ **Error Handling**: Built-in validation messages and error states
-- ✅ **Theme Customization**: Apply your brand colors and styling
-- ✅ **Security Compliance**: PCI-compliant hosted fields that never expose card data
-- ✅ **Cross-Platform**: Identical behavior on iOS and Android
-
-**Comparison with Hosted Fields:**
-
-| Feature            | Express Checkout | Hosted Fields            |
-| ------------------ | ---------------- | ------------------------ |
-| **Setup Time**     | ⚡ Minutes       | 🔧 Hours                 |
-| **Customization**  | 🎨 Theme-based   | 🎨 Full control          |
-| **Validation**     | ✅ Built-in      | 🔧 Manual setup          |
-| **Error Handling** | ✅ Automatic     | 🔧 Custom implementation |
-| **Best For**       | Standard flows   | Custom experiences       |
-
-### Basic Payment Bottom Sheet
-
-```typescript
-import React, { useEffect, useState } from 'react';
-import { View, Button, Alert, Text } from 'react-native';
-import {
-  SpreedlyCore,
-  SpreedlyEventEmitter,
-  SpreedlyEventTypes,
-  type PaymentResultRN,
-  mapPaymentResult
-} from '@spreedly/react-native-checkout';
-
-export function ExpressCheckout() {
-  const [paymentResult, setPaymentResult] = useState<string | null>(null);
-
-  useEffect(() => {
-    // Listen for payment results
-    const handlePaymentResult = (result: PaymentResultRN) => {
-      const mapped = mapPaymentResult(result);
-
-      switch (mapped.kind) {
-        case 'success':
-          setPaymentResult(mapped.token);
-          Alert.alert('Success', 'Payment completed successfully!');
-          break;
-        case 'failed':
-          Alert.alert('Error', mapped.message);
-          break;
-        case 'canceled':
-          Alert.alert('Canceled', 'Payment was canceled');
-          break;
-        case 'validation':
-          Alert.alert('Validation Error', mapped.message);
-          break;
-      }
-    };
-
-    // Add event listener for payment results using the SDK's event emitter
-    const subscription = SpreedlyEventEmitter.addListener(
-      SpreedlyEventTypes.PAYMENT_BOTTOM_SHEET_RESULT,
-      handlePaymentResult
-    );
-
-    return () => {
-      subscription.remove();
-    };
-  }, []);
-
-  const handlePaymentPress = () => {
-    SpreedlyCore.paymentBottomSheet({
-      allowBlankName: false,
-      allowExpiredDate: false,
-      yearFormat: '4',
-      nameDisplayMode: 'singleField',
-    });
-  };
-
-  return (
-    <View style={{ padding: 20 }}>
-      <Button
-        title="Start Payment"
-        onPress={handlePaymentPress}
-      />
-      {paymentResult && (
-        <Text>Payment Token: {paymentResult}</Text>
-      )}
-    </View>
-  );
-}
-```
-
-### With Custom Theme
-
-You can customize the appearance of payment components to match your brand. For comprehensive theming documentation including dark mode support, see the [Theme Customization Guide](./Theme_Guide.md).
-
-**Quick Example:**
-
-```typescript
-import { SpreedlyCore } from '@spreedly/react-native-checkout';
-
-SpreedlyCore.paymentBottomSheet({
-  allowBlankName: false,
-  allowExpiredDate: false,
-  yearFormat: '4',
-  nameDisplayMode: 'singleField',
-  theme: {
-    primaryColor: '#6366F1',
-    secondaryColor: '#8B5CF6',
-    formBorderColor: '#D1D5DB',
-    formBackgroundColor: '#FFFFFF',
-    fieldBackgroundColor: '#F9FAFB',
-    fieldLabelColor: '#6B7280',
-    borderRadius: 8,
-    fieldShape: 'rounded',
-  },
-});
-```
-
-**📖 For complete theming documentation**: See [Theme_Guide.md](./Theme_Guide.md) for:
-
-- Dark mode support
-- Global theme configuration
-- Component-level theming
-- Pre-built theme examples
-- Platform-specific behavior
-
----
-
-## 3DS Challenge
-
-For Strong Customer Authentication (SCA) requirements.
-
-**📖 For complete 3DS documentation, see [3DS_Guide.md](./3DS_Guide.md)**
-
-```typescript
-import React, { useEffect, useState } from 'react';
-import {
-  SpreedlyCore,
-  SpreedlyEventEmitter,
-  SpreedlyEventTypes,
-  type ThreeDSChallengeResult,
-} from '@spreedly/react-native-checkout';
-
-export function ThreeDSCheckout() {
-  const [isProcessing, setIsProcessing] = useState(false);
-
-  useEffect(() => {
-    const subscription = SpreedlyEventEmitter.addListener(
-      SpreedlyEventTypes.THREE_DS_CHALLENGE_RESULT,
-      (result: ThreeDSChallengeResult) => {
-        switch (result.status) {
-          case 'success':
-            handleSuccess(result.transactionId);
-            break;
-          case 'failed':
-            handleError(result.message);
-            break;
-        }
-        setIsProcessing(false);
-      }
-    );
-
-    return () => subscription.remove();
-  }, []);
-
-  const handleCheckout = async () => {
-    setIsProcessing(true);
-
-    // 1. Process purchase on YOUR backend
-    const { managedOrderToken, transactionToken } = await processPurchaseOnBackend({
-      paymentMethodToken: 'pm_xxx',
-      amount: 9999,
-      currencyCode: 'USD',
-    });
-
-    // 2. Show 3DS challenge
-    SpreedlyCore.showThreeDSChallenge(managedOrderToken, transactionToken);
-  };
-
-  return (
-    <Button
-      title={isProcessing ? 'Processing...' : 'Pay Now'}
-      onPress={handleCheckout}
-      disabled={isProcessing}
-    />
-  );
-}
-```
-
-**Backend must return:**
-
-```json
-{
-  "managedOrderToken": "mot_abc123...",
-  "transactionToken": "txn_def456..."
-}
-```
+**Quick reference:** Use `SpreedlyCore.paymentBottomSheet()` to present the payment form; listen for `PAYMENT_BOTTOM_SHEET_RESULT` via `SpreedlyEventEmitter`.
 
 ---
 
 ## Hosted Fields Integration
 
-For custom checkout flows, use individual hosted field components that give you complete control over the user experience while maintaining PCI compliance.
+Hosted fields let you build custom checkout flows with `SPLTextField` components while maintaining PCI compliance. For full documentation, examples, and security requirements, see the **[Hosted Fields Guide](./hosted_fields_guide.md)**.
 
-**When to Use Hosted Fields:**
-
-- **Custom UI Requirements**: When you need specific layouts, animations, or design patterns
-- **Complex Validation Logic**: When you need custom validation rules beyond standard card validation
-- **Multi-Step Flows**: For wizard-style checkouts or progressive disclosure patterns
-- **Advanced Integration**: When integrating with existing form libraries or state management
-- **Brand-Specific Experience**: When Express Checkout doesn't match your design system
-
-**Hosted Fields Architecture:**
-
-Hosted Fields use a secure iframe-like approach where sensitive payment data never touches your application code:
-
-```
-┌─────────────────────────────────────────┐
-│ Your React Native App                   │
-│ ┌─────────────────────────────────────┐ │
-│ │ SPLTextField (Secure Container)     │ │
-│ │ ┌─────────────────────────────────┐ │ │
-│ │ │ Native Payment Field            │ │ │
-│ │ │ (PCI Compliant - Isolated)      │ │ │
-│ │ └─────────────────────────────────┘ │ │
-│ └─────────────────────────────────────┘ │
-└─────────────────────────────────────────┘
-```
-
-**Key Benefits:**
-
-- 🔒 **PCI Compliance**: Card data never enters your app's memory or storage
-- 🎨 **Full Customization**: Complete control over styling, layout, and behavior
-- ⚡ **Performance**: Native implementation for smooth user interactions
-- 🛡️ **Security**: Encrypted communication between fields and Spreedly servers
-- 🔧 **Flexibility**: Mix and match fields based on your requirements
-
-**Security Model:**
-
-- **Data Isolation**: Payment data is processed in isolated native components
-- **Token-Based**: Your app only receives secure payment tokens, never raw card data
-- **Encrypted Transit**: All communication uses TLS encryption
-- **No Storage**: Card data is never persisted on the device
-
-### 🔒 Critical Security Requirements
-
-**MANDATORY: Sensitive Payment Fields**
-
-The following fields contain sensitive payment data and **MUST ONLY** be implemented using `SPLTextField` components:
-
-- 💳 **Card Number** (`FormFieldTypes.CARD`)
-- 🔐 **CVV/Security Code** (`FormFieldTypes.CVV`)
-- 📅 **Expiry Date** (`FormFieldTypes.EXPIRY_DATE`)
-
-**⚠️ PCI Compliance Requirement**: These fields cannot be implemented as custom TextInput components or sent as additional fields during payment submission.
-
-```typescript
-// ✅ CORRECT - Use SPLTextField for ALL sensitive payment data
-<SPLTextField formFieldType={FormFieldTypes.CARD} label="Card Number" />
-<SPLTextField formFieldType={FormFieldTypes.CVV} label="CVV" />
-<SPLTextField formFieldType={FormFieldTypes.EXPIRY_DATE} label="MM/YY" />
-
-// ❌ INCORRECT - Never use custom fields for sensitive data
-<TextInput placeholder="Card Number" />           // Violates PCI compliance
-<CustomField fieldType="card_number" />          // Not allowed
-<View><Text>Enter CVV:</Text><TextInput /></View> // Security violation
-```
-
-**Why This Restriction Exists:**
-
-- 🔒 **PCI DSS Compliance**: Card data must be handled in PCI-compliant environments
-- 🚫 **Data Isolation**: Sensitive data never enters your application's memory space
-- 📜 **Regulatory Requirements**: Payment industry regulations mandate secure handling
-- 🔍 **Fraud Prevention**: Prevents accidental exposure or logging of payment information
-- 🛡️ **Liability Protection**: Reduces your PCI compliance scope and liability
-
-**Non-Sensitive Fields (Can Use Custom Implementation):**
-
-These fields can be implemented using either `SPLTextField` or custom `TextInput` components:
-
-- 📝 **Cardholder Name** (`FormFieldTypes.NAME`)
-- 🏠 **Billing Address** fields (address, city, state, zip)
-- 📧 **Email Address**
-- 📞 **Phone Number**
-- 🏷️ **Custom Metadata** (order ID, customer ID, etc.)
-
-**Flexibility for Non-Sensitive Data:**
-
-```typescript
-// Option 1: Use SPLTextField (recommended for consistency)
-<SPLTextField formFieldType={FormFieldTypes.NAME} label="Cardholder Name" />
-
-// Option 2: Use custom TextInput (allowed for non-sensitive fields)
-<TextInput
-  placeholder="Cardholder Name"
-  value={cardholderName}
-  onChangeText={setCardholderName}
-  // Your custom styling and validation
-/>
-```
-
-**Example of Proper Implementation:**
-
-```typescript
-// Sensitive fields - MUST use SPLTextField
-<SPLTextField formFieldType={FormFieldTypes.CARD} label="Card Number" />
-<SPLTextField formFieldType={FormFieldTypes.CVV} label="CVV" />
-<SPLTextField formFieldType={FormFieldTypes.EXPIRY_DATE} label="MM/YY" />
-
-// Non-sensitive fields - Can use SPLTextField or custom implementation
-<SPLTextField formFieldType={FormFieldTypes.NAME} label="Cardholder Name" />
-// OR
-<TextInput
-  placeholder="Cardholder Name"
-  value={cardholderName}
-  onChangeText={setCardholderName}
-/>
-```
-
-### Basic Card Form
-
-```typescript
-import React, { useState } from 'react';
-import { View, Button, StyleSheet, Alert } from 'react-native';
-import {
-  SPLTextField,
-  FormFieldTypes,
-  ValidationManager,
-  SpreedlyCore,
-  AdditionalFields,
-  mapPaymentResult,
-  type FieldDescriptor,
-  type CreateCreditCardResult
-} from '@spreedly/react-native-checkout';
-
-/**
- * ValidationManager is a utility class that helps manage form validation state.
- * It tracks which fields are valid/invalid and determines overall form validity.
- *
- * Key methods:
- * - isFormValid(fields, validationState): Returns true if all required fields are valid
- * - createValidationChangeHandler(): Creates handlers for field validation callbacks (deprecated)
- *
- * Modern approach: Handle validation directly in onValidationChange callbacks
- */
-
-export function CustomCardForm() {
-  const [fieldValidation, setFieldValidation] = useState<Record<string, boolean>>({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const fields: FieldDescriptor[] = [
-    // Core payment fields
-    { type: FormFieldTypes.CARD, required: true },
-    { type: FormFieldTypes.EXPIRY_DATE, required: true },
-    { type: FormFieldTypes.CVV, required: true },
-    { type: FormFieldTypes.NAME, required: true },
-
-    // More core fields can be added here.
-  ];
-
-  // ValidationManager helps track form validity across multiple fields
-  const isFormValid = ValidationManager.isFormValid(fields, fieldValidation);
-
-  const handleSubmit = async () => {
-    if (!isFormValid || isSubmitting) return;
-
-    setIsSubmitting(true);
-
-    try {
-      const result: CreateCreditCardResult = await SpreedlyCore.createCreditCard({
-        fields: fields,
-        formFieldTypes: fields.map((f) => f.type),
-        metadata: {
-          orderId: '12345'
-        }
-      });
-
-      // Use the SDK's result mapping for consistent handling
-      const mapped = mapPaymentResult(result as PaymentResultRN);
-
-      switch (mapped.kind) {
-        case 'success':
-          console.log('Payment token:', mapped.token);
-          Alert.alert('Success', 'Payment completed successfully!');
-          // Send token to your backend for processing
-          break;
-
-        case 'validation':
-          console.log('Validation errors:', mapped.invalidFields);
-          Alert.alert('Validation Error', mapped.message);
-          // Highlight invalid fields in your UI
-          break;
-
-        case 'failed':
-          console.error('Payment failed:', mapped.errorType, mapped.message);
-          Alert.alert('Payment Failed', mapped.message);
-          // Handle different error types appropriately
-          break;
-
-        case 'canceled':
-          console.log('Payment was canceled');
-          Alert.alert('Canceled', 'Payment was canceled');
-          break;
-
-        default:
-          console.log('Unknown result:', result);
-          Alert.alert('Error', 'An unexpected error occurred');
-      }
-    } catch (error) {
-      console.error('Payment error:', error);
-      Alert.alert('Error', 'Failed to process payment. Please try again.');
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  return (
-    <View style={styles.container}>
-      <SPLTextField
-        formFieldType={FormFieldTypes.CARD}
-        label="Card Number"
-        style={styles.field}
-        onValidationChange={(isValid) => {
-          setFieldValidation(prev => ({ ...prev, [FormFieldTypes.CARD]: isValid }));
-        }}
-      />
-
-      <View style={styles.row}>
-        <SPLTextField
-          formFieldType={FormFieldTypes.EXPIRY_DATE}
-          label="MM/YY"
-          style={[styles.field, styles.halfField]}
-          onValidationChange={(isValid) => {
-            setFieldValidation(prev => ({ ...prev, [FormFieldTypes.EXPIRY_DATE]: isValid }));
-          }}
-        />
-
-        <SPLTextField
-          formFieldType={FormFieldTypes.CVV}
-          label="CVV"
-          style={[styles.field, styles.halfField]}
-          onValidationChange={(isValid) => {
-            setFieldValidation(prev => ({ ...prev, [FormFieldTypes.CVV]: isValid }));
-          }}
-        />
-      </View>
-
-      <SPLTextField
-        formFieldType={FormFieldTypes.NAME}
-        label="Cardholder Name"
-        style={styles.field}
-        onValidationChange={(isValid) => {
-          setFieldValidation(prev => ({ ...prev, [FormFieldTypes.NAME]: isValid }));
-        }}
-      />
-
-      <Button
-        title={isSubmitting ? "Processing..." : "Submit Payment"}
-        onPress={handleSubmit}
-        disabled={!isFormValid || isSubmitting}
-      />
-    </View>
-  );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    padding: 20,
-  },
-  field: {
-    height: 50,
-    marginBottom: 15,
-    borderWidth: 1,
-    borderColor: '#E0E0E0',
-    borderRadius: 8,
-    paddingHorizontal: 15,
-  },
-  row: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  halfField: {
-    width: '48%',
-  },
-});
-```
-
-### With Additional Fields
-
-```typescript
-import React, { useState } from 'react';
-import { View, Button, StyleSheet, TextInput } from 'react-native';
-import {
-  SPLTextField,
-  FormFieldTypes,
-  ValidationManager,
-  SpreedlyCore,
-  AdditionalFields,
-  mapPaymentResult,
-  type FieldDescriptor,
-  type CreateCreditCardResult
-} from '@spreedly/react-native-checkout';
-
-export function ExtendedCardForm() {
-  const [fieldValidation, setFieldValidation] = useState<Record<string, boolean>>({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  // State for additional fields data
-  const [additionalData, setAdditionalData] = useState({
-    name: '',
-    email: '',
-    phoneNumber: '',
-    addressLine1: '',
-    city: ''
-  });
-
-  const fields: FieldDescriptor[] = [
-    // Core payment fields
-    { type: FormFieldTypes.CARD, required: true },
-    { type: FormFieldTypes.EXPIRY_DATE, required: true },
-    { type: FormFieldTypes.CVV, required: true },
-  ];
-
-  const isFormValid = ValidationManager.isFormValid(fields, fieldValidation);
-
-  const handleSubmit = async () => {
-    if (!isFormValid || isSubmitting) return;
-
-    setIsSubmitting(true);
-
-    try {
-      const result: CreateCreditCardResult = await SpreedlyCore.createCreditCard({
-        fields: fields,
-        formFieldTypes: fields.map((f) => f.type),
-        metadata: {
-          orderId: '12345'
-        },
-        additionalFields: {
-          [AdditionalFields.NAME]: additionalData.name,
-          [AdditionalFields.EMAIL]: additionalData.email,
-          [AdditionalFields.PHONE_NUMBER]: additionalData.phoneNumber,
-          [AdditionalFields.ADDRESS_LINE_1]: additionalData.addressLine1,
-          [AdditionalFields.CITY]: additionalData.city,
-        }
-      });
-
-      // Use the SDK's result mapping for consistent handling
-      const mapped = mapPaymentResult(result as PaymentResultRN);
-
-      switch (mapped.kind) {
-        case 'success':
-          console.log('Payment token:', mapped.token);
-          // Send token to your backend for processing
-          break;
-
-        case 'validation':
-          console.log('Validation errors:', mapped.invalidFields);
-          // Highlight invalid fields in your UI
-          break;
-
-        case 'failed':
-          console.error('Payment failed:', mapped.errorType, mapped.message);
-          // Handle different error types appropriately
-          break;
-
-        case 'canceled':
-          console.log('Payment was canceled');
-          break;
-
-        default:
-          console.log('Unknown result:', result);
-      }
-    } catch (error) {
-      console.error('Payment error:', error);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  return (
-    <View>
-      {/* Core payment fields - MUST use SPLTextField for sensitive data */}
-      <SPLTextField formFieldType={FormFieldTypes.CARD} label="Card Number" />
-      <SPLTextField formFieldType={FormFieldTypes.EXPIRY_DATE} label="MM/YY" />
-      <SPLTextField formFieldType={FormFieldTypes.CVV} label="CVV" />
-
-      {/* Additional fields - Can use regular TextInput for non-sensitive data */}
-      <TextInput
-        style={styles.input}
-        placeholder="Cardholder Name"
-        value={additionalData.name}
-        onChangeText={(text) => setAdditionalData(prev => ({ ...prev, name: text }))}
-      />
-
-      <TextInput
-        style={styles.input}
-        placeholder="Email Address"
-        value={additionalData.email}
-        onChangeText={(text) => setAdditionalData(prev => ({ ...prev, email: text }))}
-        keyboardType="email-address"
-        autoCapitalize="none"
-      />
-
-      <TextInput
-        style={styles.input}
-        placeholder="Phone Number"
-        value={additionalData.phoneNumber}
-        onChangeText={(text) => setAdditionalData(prev => ({ ...prev, phoneNumber: text }))}
-        keyboardType="phone-pad"
-      />
-
-      <TextInput
-        style={styles.input}
-        placeholder="Address Line 1"
-        value={additionalData.addressLine1}
-        onChangeText={(text) => setAdditionalData(prev => ({ ...prev, addressLine1: text }))}
-      />
-
-      <TextInput
-        style={styles.input}
-        placeholder="City"
-        value={additionalData.city}
-        onChangeText={(text) => setAdditionalData(prev => ({ ...prev, city: text }))}
-      />
-
-      <Button
-        title={isSubmitting ? "Processing..." : "Submit Payment"}
-        onPress={handleSubmit}
-        disabled={!isFormValid || isSubmitting}
-      />
-    </View>
-  );
-}
-
-const styles = StyleSheet.create({
-  input: {
-    height: 50,
-    marginBottom: 15,
-    borderWidth: 1,
-    borderColor: '#E0E0E0',
-    borderRadius: 8,
-    paddingHorizontal: 15,
-    fontSize: 16,
-  },
-});
-```
+**Quick reference:** Sensitive fields (card number, CVV, expiry date) must use `SPLTextField`; non-sensitive fields (name, address, email) can use `SPLTextField` or custom `TextInput`.
 
 ---
 
@@ -1465,7 +822,7 @@ import { SpreedlyCore } from '@spreedly/react-native-checkout';
 SpreedlyCore.setParam('ALLOW_BLANK_NAME', false);
 SpreedlyCore.setParam('ALLOW_EXPIRED_DATE', false);
 
-// Set global theme (see Theme_Guide.md for complete documentation)
+// Set global theme (see theme_guide.md for complete documentation)
 SpreedlyCore.setGlobalTheme({
   theme: {
     primaryColor: '#0077C8',
@@ -1490,7 +847,7 @@ SpreedlyCore.setGlobalTheme({
 });
 ```
 
-**📖 For complete theming documentation**: See [Theme_Guide.md](./Theme_Guide.md)
+**📖 For complete theming documentation**: See [Theme Guide](./theme_guide.md)
 
 #### Understanding Validation Parameters
 
@@ -1664,7 +1021,6 @@ export function DynamicForm() {
   );
 }
 ```
-
 
 ---
 
@@ -1891,7 +1247,7 @@ export function usePaymentWithRetry() {
 
 ### Theme Configuration
 
-The Spreedly SDK supports comprehensive theming with automatic dark mode support. For complete theming documentation, see the [Theme Customization Guide](./Theme_Guide.md).
+The Spreedly SDK supports comprehensive theming with automatic dark mode support. For complete theming documentation, see the [Theme Customization Guide](./theme_guide.md).
 
 **Quick Theme Example:**
 
@@ -1931,7 +1287,7 @@ SpreedlyCore.setGlobalTheme({
 />
 ```
 
-**📖 Complete Theming Documentation**: See [Theme_Guide.md](./Theme_Guide.md) for:
+**📖 Complete Theming Documentation**: See [Theme Guide](./theme_guide.md) for:
 
 - Global theme configuration
 - Component-level theming
@@ -1996,6 +1352,8 @@ Initialize the SDK with authentication parameters.
 - `options.environmentKey: string` - Spreedly environment key
 - `options.forterSiteId: string` - Forter site ID for fraud prevention integration (pass empty string `''` if not using Forter)
 
+> **Note:** The SDK automatically sets `sdkPlatform` using native enum values (`SdkPlatform.reactNative` on iOS, `SdkPlatform.REACT_NATIVE` on Android) internally for telemetry purposes. This parameter is not exposed in `SpreedlySDKInitOptions` and does not need to be provided by the consumer.
+
 #### `SpreedlyCore.createCreditCard(options: CreateCreditCardOptions): Promise<CreateCreditCardResult>`
 
 Create a payment method using hosted fields.
@@ -2021,37 +1379,13 @@ Show the express checkout bottom sheet.
 - `options.theme?: BaseThemeConfig` - Custom theme for light mode
 - `options.darkTheme?: BaseThemeConfig` - Custom theme for dark mode
 
-**For theming documentation**, see [Theme_Guide.md](./Theme_Guide.md)
-
-**🚧 SDK Enhancement Recommendations:**
-
-1. **Type Safety for `nameDisplayMode`**: Currently accepts string literals, but should use SDK-defined constants:
-
-   ```typescript
-   // Current (prone to typos)
-   nameDisplayMode: 'singleField'; // Could be mistyped as 'single-field'
-
-   // Recommended SDK improvement
-   nameDisplayMode: NameDisplayMode.SINGLE_FIELD; // Type-safe constant
-   ```
-
-2. **Consistency with `yearFormat`**: The `yearFormat` parameter uses string literals but should also use constants:
-
-   ```typescript
-   // Current
-   yearFormat: '4';
-
-   // Recommended
-   yearFormat: YearFormat.FOUR_DIGIT;
-   ```
-
-3. **Runtime Validation**: The SDK should validate these parameters and provide clear error messages for invalid values rather than failing silently.
+**For theming documentation**, see [Theme Guide](./theme_guide.md)
 
 #### `SpreedlyCore.setGlobalTheme(options: GlobalThemeOptions | BaseThemeConfig): void`
 
 Set global theme for all SDK components with optional dark mode support.
 
-**For complete theming documentation**, see [Theme_Guide.md](./Theme_Guide.md)
+**For complete theming documentation**, see [Theme Guide](./theme_guide.md)
 
 #### `SpreedlyCore.setParam(parameter: ValidationParameter, value: boolean): void`
 
@@ -2066,7 +1400,7 @@ Display the 3DS challenge UI to authenticate a transaction.
 - `managedOrderToken: string` - Managed order token from your backend's Spreedly API response
 - `transactionToken: string` - Transaction token from your backend's purchase/authorize response
 
-**Usage:** See [3DS_Guide.md](./3DS_Guide.md) for complete implementation details.
+**Usage:** See [3DS Guide](./3ds_guide.md) for complete implementation details.
 
 #### `SpreedlyCore.hideThreeDSChallenge(): void`
 
@@ -2091,7 +1425,7 @@ Secure hosted field component for payment data entry.
 - `onValidationChange?: (isValid: boolean) => void` - Called when the native field validation state changes
 - `onContentSizeChange?: (size: { width: number; height: number }) => void` - Called when the native content size changes
 
-**For theming documentation**, see [Theme_Guide.md](./Theme_Guide.md)
+**For theming documentation**, see [Theme Guide](./theme_guide.md)
 
 **Example Usage:**
 
@@ -2164,7 +1498,7 @@ Secure hosted field component for payment data entry.
 
 #### Theme Configuration Types
 
-For complete theme configuration documentation including dark mode support, see [Theme_Guide.md](./Theme_Guide.md).
+For complete theme configuration documentation including dark mode support, see [Theme Guide](./theme_guide.md).
 
 **Quick Reference:**
 
@@ -3000,9 +2334,9 @@ cd android
 
 **Common version combinations that work:**
 
-- **React Native 0.76+**: Kotlin 2.0.21 + AGP 8.7.2
-- **React Native 0.75**: Kotlin 1.9.25 + AGP 8.5.2 (not recommended)
-- **React Native 0.72-0.74**: Not supported by Spreedly SDK
+- **React Native 0.77+**: Kotlin 2.0.21 + AGP 8.7.2
+- **React Native 0.76**: Not supported (ships Kotlin 1.9.25, SDK requires 2.0.21)
+- **React Native 0.75 and below**: Not supported by Spreedly SDK
 
 #### 10. **Android Lint Failures with Kotlin 2.0.21+**
 
@@ -3111,7 +2445,7 @@ Use this checklist to systematically diagnose and resolve integration issues:
   - [ ] Kotlin version 2.0.21 or higher
   - [ ] Android Gradle Plugin 8.7.2 or higher
   - [ ] Gradle wrapper 8.9 or higher
-  - [ ] React Native 0.76 or higher
+  - [ ] React Native 0.77 or higher
 
 - [ ] **Gradle Configuration**
   - [ ] `spreedly_github_setup.gradle` applied in `android/build.gradle`

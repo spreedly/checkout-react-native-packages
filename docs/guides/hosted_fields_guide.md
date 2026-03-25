@@ -2,7 +2,7 @@
 
 For custom checkout flows, use individual hosted field components that give you complete control over the user experience while maintaining PCI compliance.
 
-For SDK installation and initialization, see the [Integration Guide](./Integration_Guide.md).
+For SDK installation and initialization, see the [Integration Guide](./integration_guide.md).
 
 ## When to Use Hosted Fields
 
@@ -372,4 +372,4 @@ const styles = StyleSheet.create({
 ## Related Documentation
 
 - **Theme customization**: [Theme Guide](./theme_guide.md)
-- **API Reference** (SPLTextField, FormFieldTypes, ValidationManager): [Integration Guide - API Reference](./Integration_Guide.md#api-reference)
+- **API Reference** (SPLTextField, FormFieldTypes, ValidationManager): [Integration Guide - API Reference](./integration_guide.md#api-reference)

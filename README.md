@@ -61,21 +61,21 @@ export function PaymentForm() {
 
 ### Integration Guides
 
-- **[Integration Guide](docs/guides/Integration_Guide.md)** - Complete integration walkthrough
-- **[Theme Guide](docs/guides/Theme_Guide.md)** - Theme customization and dark mode support
-- **[React Native 0.76 Requirements](docs/guides/RN_076_Requirement.md)** - Version-specific requirements
+- **[Integration Guide](docs/guides/integration_guide.md)** - Complete integration walkthrough
+- **[Theme Guide](docs/guides/theme_guide.md)** - Theme customization and dark mode support
+- **[React Native 0.77 Requirements](docs/guides/rn_077_requirement.md)** - Version-specific requirements
 
 ### Privacy & Security
 
-- **[Security Policy](docs/guides/Security.md)** - Security vulnerability reporting and policy
-- **[Unified Privacy](docs/guides/Unified_Privacy.md)** - Comprehensive privacy documentation
-- **[iOS Privacy Guide](docs/guides/iOS_Privacy_Guide.md)** - iOS-specific privacy setup
-- **[Android Data Safety Guide](docs/guides/Android_Data_Safety_Guide.md)** - Android Data Safety form requirements
-- **[Source Maps Security Guide](docs/guides/Source_Maps_Security_Guide.md)** - Secure source maps configuration
+- **[Security Policy](docs/guides/security.md)** - Security vulnerability reporting and policy
+- **[Unified Privacy](docs/guides/unified_privacy.md)** - Comprehensive privacy documentation
+- **[iOS Privacy Guide](docs/guides/ios_privacy_guide.md)** - iOS-specific privacy setup
+- **[Android Data Safety Guide](docs/guides/android_data_safety_guide.md)** - Android Data Safety form requirements
+- **[Source Maps Security Guide](docs/guides/source_maps_security_guide.md)** - Secure source maps configuration
 
 ### Troubleshooting
 
-- **[Common Issues](docs/guides/Integration_Guide.md#troubleshooting)** - General troubleshooting guide
+- **[Common Issues](docs/guides/integration_guide.md#troubleshooting)** - General troubleshooting guide
 
 ### Version History
 
@@ -83,9 +83,9 @@ export function PaymentForm() {
 
 ## 🔧 Compatibility
 
-- **React Native**: 0.76.x
+- **React Native**: 0.77+ (recommended 0.79+)
 - **React**: 19.x
-- **Android**: minSdk 24 (Android 7.0+), targetSdk 34, compileSdk 35
+- **Android**: minSdk 26 (Android 8.0+), targetSdk 34, compileSdk 36
 - **iOS**: 15.1+, Xcode 15+
 - **Architectures**: Legacy and New Architecture (Fabric/TurboModules)
 
@@ -137,7 +137,7 @@ Secure, PCI-compliant input components that handle sensitive payment data:
 
 ### 1. Installation and Setup
 
-Follow our comprehensive [Integration Guide](docs/guides/Integration_Guide.md) for step-by-step setup instructions.
+Follow our comprehensive [Integration Guide](docs/guides/integration_guide.md) for step-by-step setup instructions.
 
 ### 2. Configuration
 

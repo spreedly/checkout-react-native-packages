@@ -350,8 +350,8 @@ case 'success':
 
 - 📖 [Spreedly API Documentation](https://docs.spreedly.com/)
 - 💻 Example: `example/src/screens/recaching/Recaching.tsx`
-- ⚙️ Requires React Native 0.76+
+- ⚙️ Requires React Native 0.77+
 
 ---
 
-**Last Updated:** November 20, 2025
+**Last Updated:** March 2026

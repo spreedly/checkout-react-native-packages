@@ -2,7 +2,7 @@
 
 Gateway-Specific 3DS handles authentication for payment gateways that implement their own 3DS mechanism instead of the standard EMV 3DS protocol. The SDK manages the challenge UI, user interaction, and result processing automatically.
 
-For SDK installation and initialization, see the [Integration Guide](./Integration_Guide.md).
+For SDK installation and initialization, see the [Integration Guide](./integration_guide.md).
 
 ## Prerequisites
 
