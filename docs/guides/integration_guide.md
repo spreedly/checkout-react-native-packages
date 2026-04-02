@@ -370,12 +370,97 @@ echo ".env" >> .gitignore
 
 ### Step 3: Install the Package
 
+**Recommended: Single Package Installation**
+
+Install the complete SDK with all JavaScript functionality included:
+
 ```bash
 # Using yarn
 yarn add @spreedly/react-native-checkout
 
 # Using npm
 npm install @spreedly/react-native-checkout
+```
+
+**Optional: Bundle Size Optimization**
+
+For native bundle size optimization, install optional marker packages alongside the main package:
+
+```bash
+# Main package + Stripe native dependencies (adds ~25MB iOS, varies Android)
+npm install @spreedly/react-native-checkout @spreedly/react-native-checkout-stripe-apm
+
+# Main package + Braintree native dependencies (adds ~7MB iOS, varies Android)
+npm install @spreedly/react-native-checkout @spreedly/react-native-checkout-braintree-apm
+```
+
+**💡 Key Benefits:**
+
+- **Single Dependency**: One main package provides all JavaScript functionality
+- **Native Optimization**: Optional packages reduce native bundle size without JavaScript complexity
+
+### Step 3a: Import Patterns
+
+**Core Package:**
+
+```typescript
+// Core functionality: SDK init, payment sheet, 3DS, offsite, utils
+import {
+  SpreedlyCore,
+  GatewaySpecific3DS,
+  SPLTextField,
+  PaymentBottomSheet,
+  OffsitePayment,
+} from '@spreedly/react-native-checkout';
+```
+
+**Satellite Package Imports (for APM features):**
+
+```typescript
+// Stripe APM (requires @spreedly/react-native-checkout-stripe-apm)
+import { StripeAPM } from '@spreedly/react-native-checkout-stripe-apm';
+import type {
+  StripeAPMConfig,
+  StripeAPMResult,
+} from '@spreedly/react-native-checkout-stripe-apm';
+
+// Braintree APM (requires @spreedly/react-native-checkout-braintree-apm)
+import { BraintreeAPM } from '@spreedly/react-native-checkout-braintree-apm';
+import type {
+  BraintreeAPMCheckoutConfig,
+  BraintreeAPMResult,
+} from '@spreedly/react-native-checkout-braintree-apm';
+```
+
+**Feature Detection:**
+
+When using selective packages, you can check which features are available:
+
+```typescript
+// Check if Stripe APM is available
+let stripeAvailable = false;
+try {
+  require('@spreedly/react-native-checkout-stripe-apm');
+  stripeAvailable = true;
+} catch {
+  // Stripe APM package not installed
+}
+
+// Conditionally show payment options
+const PaymentOptions = () => {
+  return (
+    <View>
+      <SPLTextField formFieldType={FormFieldTypes.CARD} label="Card Number" />
+
+      {stripeAvailable && (
+        <Button
+          title="Pay with Stripe APM"
+          onPress={() => StripeAPM.presentCheckout(config)}
+        />
+      )}
+    </View>
+  );
+};
 ```
 
 ### Step 4: iOS Setup
@@ -435,8 +520,30 @@ end
 **What These Changes Do:**
 
 - **Line 1**: Loads the Spreedly setup script that configures access to private iOS dependencies
-- **Line 2**: Initializes Spreedly-specific CocoaPods that are required for the SDK to function
+- **Line 2**: Initializes Spreedly-specific CocoaPods with automatic conditional loading based on installed packages
 - **Line 3**: Fixes non-modular header build errors when using React Native New Architecture with CocoaPods frameworks
+
+**Conditional Pod Loading:**
+
+The setup script automatically detects which Spreedly packages you've installed and only includes the necessary pods:
+
+- **Core packages** (always included): `SpreedlySecurity`, `SpreedlyCore`, `SpreedlyUI`
+- **Stripe APM** (only if `@spreedly/react-native-checkout-stripe-apm` is installed): `SpreedlyStripeAPM`, `StripePaymentSheet`
+- **Braintree APM** (only if `@spreedly/react-native-checkout-braintree-apm` is installed): `SpreedlyBraintree`, `Braintree`
+- **Forter 3DS** (pass `include_forter: true` to include): `Forter3DS`
+
+**Manual Control (Optional):**
+
+You can also explicitly control which pods are included:
+
+```ruby
+# Explicit control
+init_spreedly_checkout_pods(
+  include_stripe: true,     # Force include Stripe pods
+  include_braintree: false,  # Force exclude Braintree pods
+  include_forter: true       # Include Forter 3DS pod
+)
+```
 
 **⚠️ Important**: Don't replace your entire Podfile - just add these three lines to your existing configuration.
 
@@ -847,7 +954,7 @@ SpreedlyCore.setGlobalTheme({
 });
 ```
 
-**📖 For complete theming documentation**: See [Theme Guide](./theme_guide.md)
+**📖 For complete theming documentation**: See [theme_guide.md](./theme_guide.md)
 
 #### Understanding Validation Parameters
 
@@ -1287,7 +1394,7 @@ SpreedlyCore.setGlobalTheme({
 />
 ```
 
-**📖 Complete Theming Documentation**: See [Theme Guide](./theme_guide.md) for:
+**📖 Complete Theming Documentation**: See [theme_guide.md](./theme_guide.md) for:
 
 - Global theme configuration
 - Component-level theming
@@ -1379,13 +1486,13 @@ Show the express checkout bottom sheet.
 - `options.theme?: BaseThemeConfig` - Custom theme for light mode
 - `options.darkTheme?: BaseThemeConfig` - Custom theme for dark mode
 
-**For theming documentation**, see [Theme Guide](./theme_guide.md)
+**For theming documentation**, see [theme_guide.md](./theme_guide.md)
 
 #### `SpreedlyCore.setGlobalTheme(options: GlobalThemeOptions | BaseThemeConfig): void`
 
 Set global theme for all SDK components with optional dark mode support.
 
-**For complete theming documentation**, see [Theme Guide](./theme_guide.md)
+**For complete theming documentation**, see [theme_guide.md](./theme_guide.md)
 
 #### `SpreedlyCore.setParam(parameter: ValidationParameter, value: boolean): void`
 
@@ -1400,7 +1507,7 @@ Display the 3DS challenge UI to authenticate a transaction.
 - `managedOrderToken: string` - Managed order token from your backend's Spreedly API response
 - `transactionToken: string` - Transaction token from your backend's purchase/authorize response
 
-**Usage:** See [3DS Guide](./3ds_guide.md) for complete implementation details.
+**Usage:** See [3DS_Guide.md](./3ds_guide.md) for complete implementation details.
 
 #### `SpreedlyCore.hideThreeDSChallenge(): void`
 
@@ -1425,7 +1532,7 @@ Secure hosted field component for payment data entry.
 - `onValidationChange?: (isValid: boolean) => void` - Called when the native field validation state changes
 - `onContentSizeChange?: (size: { width: number; height: number }) => void` - Called when the native content size changes
 
-**For theming documentation**, see [Theme Guide](./theme_guide.md)
+**For theming documentation**, see [theme_guide.md](./theme_guide.md)
 
 **Example Usage:**
 
@@ -1498,7 +1605,7 @@ Secure hosted field component for payment data entry.
 
 #### Theme Configuration Types
 
-For complete theme configuration documentation including dark mode support, see [Theme Guide](./theme_guide.md).
+For complete theme configuration documentation including dark mode support, see [theme_guide.md](./theme_guide.md).
 
 **Quick Reference:**
 
@@ -2348,7 +2455,7 @@ cd android
 
 **Root Cause**: Android Lint has compatibility issues with Kotlin 2.0.21+ and newer Compose versions.
 
-**Solution**: The Spreedly SDK automatically handles these lint compatibility issues. The SDK's `android/build.gradle` already includes the necessary lint configuration to prevent these failures.
+**Solution**: The Spreedly SDK automatically handles these lint compatibility issues. The SDK's `packages/core/android/build.gradle` already includes the necessary lint configuration to prevent these failures.
 
 If you're still experiencing lint issues, verify that you're using the correct Kotlin version:
 
