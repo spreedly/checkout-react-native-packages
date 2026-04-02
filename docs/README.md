@@ -12,6 +12,10 @@
 | [Theme Guide](guides/theme_guide.md)                       | Colors, typography, and styling customization                      |
 | [CVV Recaching](guides/cvv_recaching_guide.md)             | CVV recaching for saved payment methods                            |
 | [Braintree Payments](guides/braintree_payment_guide.md)    | PayPal and Venmo via Braintree                                     |
+| [Stripe APM](guides/stripe_apm_guide.md)                  | Stripe alternative payment methods (iDEAL, Bancontact, EPS, etc.) |
+| [EBANX Payments](guides/ebanx_payment_guide.md)           | EBANX Latin American payment methods integration                   |
+| [Offsite Payments](guides/offsite_payments_guide.md)       | PayPal and SPREL offsite payment integration                       |
+| [Testing Guide](guides/testing_guide.md)                   | Testing your integration before going to production                |
 | [Android Data Safety](guides/android_data_safety_guide.md) | Android data safety declarations and requirements                  |
 | [iOS Privacy](guides/ios_privacy_guide.md)                 | iOS privacy manifest and App Store requirements                    |
 | [Unified Privacy](guides/unified_privacy.md)               | Cross-platform privacy documentation                               |
