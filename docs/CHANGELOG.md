@@ -1,3 +1,21 @@
+## [0.3.1-beta.1] - 2026-04-02
+
+### 🐛 Fixed
+
+  - Update codegenconfig for spreedly core package
+
+### 📦 Native SDK Versions
+
+| Platform | Component / SDK | Version |
+| -------- | --------------- | ------- |
+| Android  | checkout-payments-core (core) | 0.12.1 |
+| Android  | checkout-braintree-apm | 0.12.1 |
+| Android  | checkout-stripe-apm | 0.12.1 |
+| iOS      | Spreedly private pods (tag) | 1.2.2 |
+| iOS      | Braintree (CocoaPods) |   s.dependency SpreedlyBraintree |
+| iOS      | StripePaymentSheet (CocoaPods) | ~> 25.0 |
+
+---
 ## [0.3.1-beta.0] - 2026-04-02
 
 ### ✨ Added
