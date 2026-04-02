@@ -16,6 +16,50 @@ yarn add @spreedly/react-native-checkout
 cd ios && pod install
 ```
 
+### Android Setup
+
+Add the required Maven repositories to your React Native app's `android/build.gradle` file:
+
+```groovy
+allprojects {
+    repositories {
+        // ... existing repositories (google(), mavenCentral(), etc.)
+
+        // Spreedly GitHub Packages repository
+        maven {
+            url = uri("https://maven.pkg.github.com/spreedly/checkout-android-maven")
+            credentials {
+                username = System.getenv('GITHUB_USERNAME') ?: project.findProperty('GITHUB_USERNAME')
+                password = System.getenv('GITHUB_TOKEN') ?: project.findProperty('GITHUB_TOKEN')
+            }
+        }
+
+        // Forter 3DS SDK repository (required for 3DS authentication)
+        maven {
+            url = uri("https://mobile-sdks.forter.com/android")
+            credentials {
+                username = System.getenv('FORTER_USERNAME') ?: "forter-android-sdk"
+                password = System.getenv('FORTER_PASSWORD') ?: ""
+            }
+        }
+    }
+}
+```
+
+**Environment Variables**: Set your GitHub credentials as environment variables or in `gradle.properties`:
+
+```bash
+# Option 1: Environment variables
+export GITHUB_USERNAME=your_github_username
+export GITHUB_TOKEN=your_github_personal_access_token
+
+# Option 2: Add to ~/.gradle/gradle.properties
+GITHUB_USERNAME=your_github_username
+GITHUB_TOKEN=your_github_personal_access_token
+```
+
+> **Note**: Your GitHub token needs `read:packages` scope to download the Spreedly SDK packages.
+
 ### Basic Usage
 
 Initialize the SDK once at app startup:
@@ -62,16 +106,20 @@ export function PaymentForm() {
 ### Integration Guides
 
 - **[Integration Guide](docs/guides/integration_guide.md)** - Complete integration walkthrough
-- **[Theme Guide](docs/guides/theme_guide.md)** - Theme customization and dark mode support
-- **[React Native 0.77 Requirements](docs/guides/rn_077_requirement.md)** - Version-specific requirements
+- **[React Native 0.77+ Requirements](docs/guides/rn_077_requirement.md)** - Version-specific requirements
 
-### Privacy & Security
+### SDK Reference
 
-- **[Security Policy](docs/guides/security.md)** - Security vulnerability reporting and policy
-- **[Unified Privacy](docs/guides/unified_privacy.md)** - Comprehensive privacy documentation
-- **[iOS Privacy Guide](docs/guides/ios_privacy_guide.md)** - iOS-specific privacy setup
-- **[Android Data Safety Guide](docs/guides/android_data_safety_guide.md)** - Android Data Safety form requirements
-- **[Source Maps Security Guide](docs/guides/source_maps_security_guide.md)** - Secure source maps configuration
+- **[API Reference](docs/guides/integration_guide.md#api-reference)** - Complete API documentation
+- **[Component Reference](docs/guides/integration_guide.md#components)** - UI component documentation
+- **[Event Types](docs/guides/integration_guide.md#event-types)** - Event system documentation
+
+### Security & Privacy
+
+- **[Security Policy](docs/guides/security.md)** - Vulnerability reporting, security best practices, and compliance information
+- **[Android Data Safety Guide](docs/guides/android_data_safety_guide.md)** - Android data safety declarations and requirements
+- **[iOS Privacy Guide](docs/guides/ios_privacy_guide.md)** - iOS privacy manifest and App Store requirements
+- **[Unified Privacy Guide](docs/guides/unified_privacy.md)** - Unified privacy documentation across platforms
 
 ### Troubleshooting
 
@@ -84,7 +132,7 @@ export function PaymentForm() {
 ## 🔧 Compatibility
 
 - **React Native**: 0.77+ (recommended 0.79+)
-- **React**: 19.x
+- **React**: 18.2+
 - **Android**: minSdk 26 (Android 8.0+), targetSdk 34, compileSdk 36
 - **iOS**: 15.1+, Xcode 15+
 - **Architectures**: Legacy and New Architecture (Fabric/TurboModules)
@@ -132,6 +180,10 @@ Secure, PCI-compliant input components that handle sensitive payment data:
 - **End-to-End Encryption**: All payment data is encrypted in transit
 - **Tokenization**: Card data is tokenized and never stored locally
 - **Secure Communication**: TLS 1.2+ for all network communications
+- **Security Testing**: Comprehensive security testing including:
+  - Static Application Security Testing (SAST) via CodeQL
+  - Dependency vulnerability scanning
+  - **Dynamic Application Security Testing (DAST)** - Runtime security scanning
 
 ## 🚀 Getting Started
 
@@ -205,7 +257,8 @@ export function BasicCardForm() {
 
       switch (mapped.kind) {
         case 'success':
-          Alert.alert('Success', `Payment token: ${mapped.token}`);
+          // Send mapped.token to your backend over HTTPS
+          Alert.alert('Success', 'Payment method saved');
           break;
         case 'validation':
           Alert.alert(
@@ -322,11 +375,47 @@ export function PaymentScreen() {
   return (
     <View style={{ padding: 20 }}>
       <Button title="Pay Now" onPress={handlePaymentPress} />
-      {paymentToken && <Text>Payment Token: {paymentToken}</Text>}
+      {paymentToken && <Text>Payment method saved</Text>}
     </View>
   );
 }
 ```
+
+## 🛠️ Development
+
+### For SDK Users
+
+If you're integrating this SDK into your app, you only need the documentation above. The SDK is distributed as a compiled package and doesn't require any build steps.
+
+## 📋 Release Notes
+
+### Latest Release
+
+See [GitHub Releases](https://github.com/spreedly/checkout-react-native/releases) for the latest version and changelog.
+
+### Distribution
+
+This package is distributed through:
+
+- **GitHub Packages** (Private): `@spreedly/react-native-checkout`
+
+## 🔐 Package Security Verification
+
+Every release includes SHA-256 checksums and GPG signatures for package integrity verification. This package is published by the verified **Spreedly** organization on GitHub.
+
+## 🤝 Support
+
+### Documentation
+
+- [Integration Guide](docs/guides/integration_guide.md) - Complete setup and usage guide
+- [API Reference](docs/guides/integration_guide.md#api-reference) - Detailed API documentation
+- [Go-live / ops checklist](docs/GO_LIVE_INDEX.md) - Production readiness and CI runbook map
+
+### Getting Help
+
+- **Issues**: [GitHub Issues](https://github.com/spreedly/checkout-react-native/issues)
+- **Internal Support**: #mobile-sdk Slack channel
+- **Email**: mobile-team@spreedly.com
 
 ## License
 
