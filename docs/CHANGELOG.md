@@ -1,3 +1,5 @@
+# CHANGELOG
+
 ## [0.3.1-beta.1] - 2026-04-02
 
 ### 🐛 Fixed
@@ -6,14 +8,10 @@
 
 ### 📦 Native SDK Versions
 
-| Platform | Component / SDK | Version |
-| -------- | --------------- | ------- |
-| Android  | checkout-payments-core (core) | 0.12.1 |
-| Android  | checkout-braintree-apm | 0.12.1 |
-| Android  | checkout-stripe-apm | 0.12.1 |
-| iOS      | Spreedly private pods (tag) | 1.2.2 |
-| iOS      | Braintree (CocoaPods) |   s.dependency SpreedlyBraintree |
-| iOS      | StripePaymentSheet (CocoaPods) | ~> 25.0 |
+| Platform | SDK                  | Version |
+| -------- | -------------------- | ------- |
+| Android  | checkout-android     | 0.12.1  |
+| iOS      | checkout-ios-package | 1.2.2   |
 
 ---
 ## [0.3.1-beta.0] - 2026-04-02
@@ -28,8 +26,6 @@
 
   - Update app distribution workflow to match mono repo architecture
   - Release docs updated
-  - Cursor folder removal
-  - Dependabot workflow fix
   - Dependabot workflow fix
   - Packages export fix
 
@@ -40,17 +36,12 @@
 
 ### 📦 Native SDK Versions
 
-| Platform | Component / SDK | Version |
-| -------- | --------------- | ------- |
-| Android  | checkout-payments-core (core) | 0.12.1 |
-| Android  | checkout-braintree-apm | 0.12.1 |
-| Android  | checkout-stripe-apm | 0.12.1 |
-| iOS      | Spreedly private pods (tag) | 1.2.2 |
-| iOS      | Braintree (CocoaPods) |   s.dependency SpreedlyBraintree |
-| iOS      | StripePaymentSheet (CocoaPods) | ~> 25.0 |
+| Platform | SDK                  | Version |
+| -------- | -------------------- | ------- |
+| Android  | checkout-android     | 0.12.1  |
+| iOS      | checkout-ios-package | 1.2.2   |
 
 ---
-# CHANGELOG
 
 ## [0.3.0] - 2026-03-19
 

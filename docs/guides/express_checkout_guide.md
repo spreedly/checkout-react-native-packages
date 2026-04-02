@@ -10,6 +10,7 @@ This guide covers:
 - Setting up payment bottom sheet in your React Native app
 - Handling all payment events (success, failed, canceled, validation)
 - Customizing the appearance with themes
+- Optional extra fields in the bottom sheet (for example billing address) via `otherFields`
 - Best practices for error handling and user experience
 
 ## Overview
@@ -174,7 +175,7 @@ return (
   <View>
     <Button title="Add Payment Method" onPress={handlePaymentPress} />
     {errorMessage && <Text style={{ color: 'red' }}>{errorMessage}</Text>}
-    {paymentToken && <Text>Token: {paymentToken}</Text>}
+    {paymentToken && <Text>Payment method saved</Text>}
   </View>
 );
 ```
@@ -185,14 +186,15 @@ return (
 
 ### PaymentBottomSheetOptions
 
-| Property           | Type              | Default                         | Description                              |
-| ------------------ | ----------------- | ------------------------------- | ---------------------------------------- |
-| `allowBlankName`   | `boolean`         | `false`                         | Allow submission without cardholder name |
-| `allowExpiredDate` | `boolean`         | `false`                         | Allow expired cards (for testing)        |
-| `yearFormat`       | `YearFormat`      | `YearFormat.FourDigit`          | Year format for expiry (YY or YYYY)      |
-| `nameDisplayMode`  | `NameDisplayMode` | `NameDisplayMode.SeperateField` | Show name as one field or first/last     |
-| `theme`            | `BaseThemeConfig` | SDK default                     | Light mode theme                         |
-| `darkTheme`        | `BaseThemeConfig` | SDK default                     | Dark mode theme                          |
+| Property           | Type                | Default                          | Description                                                                                                         |
+| ------------------ | ------------------- | -------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `allowBlankName`   | `boolean`           | `false`                          | Allow submission without cardholder name                                                                            |
+| `allowExpiredDate` | `boolean`           | `false`                          | Allow expired cards (for testing)                                                                                   |
+| `yearFormat`       | `YearFormat`        | `YearFormat.FourDigit`           | Year format for expiry (YY or YYYY)                                                                                 |
+| `nameDisplayMode`  | `NameDisplayMode`   | `NameDisplayMode.SeparateFields` | Show name as one field or first/last                                                                                |
+| `otherFields`      | `FieldDescriptor[]` | `undefined`                      | Extra fields beyond the default card form; each item uses `type` (a `FormFieldTypes` value) and optional `required` |
+| `theme`            | `BaseThemeConfig`   | SDK default                      | Light mode theme                                                                                                    |
+| `darkTheme`        | `BaseThemeConfig`   | SDK default                      | Dark mode theme                                                                                                     |
 
 ### Configuration Examples
 
@@ -235,7 +237,37 @@ SpreedlyCore.paymentBottomSheet({
 });
 ```
 
-For complete theming documentation, see [Theme Guide](./theme_guide.md).
+### Additional fields (`otherFields`)
+
+Pass `otherFields` to include extra native inputs in the same bottom sheet. The SDK renders and validates them together with the default card fields. Each entry is a `FieldDescriptor`: `{ type: string; required?: boolean }`. Use `FormFieldTypes` constants for `type`.
+
+`FormFieldTypes` includes `CARD`, `CVV`, `NAME`, `MONTH`, `YEAR`, `YEAR_SECONDARY`, `EXPIRY_DATE`, `ADDRESS_LINE_1`, `ADDRESS_LINE_2`, `CITY`, `STATE`, and `ZIP`. The default sheet already collects card details; `otherFields` is commonly used for address-style fields.
+
+```typescript
+import {
+  SpreedlyCore,
+  FormFieldTypes,
+  type FieldDescriptor,
+  YearFormat,
+} from '@spreedly/react-native-checkout';
+
+const billingFields: FieldDescriptor[] = [
+  { type: FormFieldTypes.ADDRESS_LINE_1, required: true },
+  { type: FormFieldTypes.ADDRESS_LINE_2, required: false },
+  { type: FormFieldTypes.CITY, required: true },
+  { type: FormFieldTypes.STATE, required: true },
+  { type: FormFieldTypes.ZIP, required: true },
+];
+
+SpreedlyCore.paymentBottomSheet({
+  otherFields: billingFields,
+  allowBlankName: false,
+  allowExpiredDate: false,
+  yearFormat: YearFormat.FourDigit,
+});
+```
+
+For complete theming documentation, see [theme_guide.md](./theme_guide.md).
 
 ---
 
@@ -416,8 +448,8 @@ Declined: 4000 0000 0000 0002
 ## Support
 
 - 📖 [Spreedly API Documentation](https://docs.spreedly.com/)
-- 💻 Example: `example/src/screens/expressCheckout/ExpressCheckout.tsx`
-- 🎨 Theming: See [Theme Guide](./theme_guide.md)
+- 💻 Examples: `example/src/screens/expressCheckout/ExpressCheckout.tsx`, `example/src/screens/paymentBottomSheetAdditionalFields/PaymentBottomSheetAdditionalFields.tsx` (`otherFields`)
+- 🎨 Theming: See [theme_guide.md](./theme_guide.md)
 - ⚙️ Requires React Native 0.77+
 
 ---

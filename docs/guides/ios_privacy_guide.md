@@ -18,7 +18,7 @@ Two required components:
 
 ### Implementation Status
 
-✅ **Implemented:** `ios/PrivacyInfo.xcprivacy` is included and bundled automatically
+✅ **Implemented:** `packages/core/ios/PrivacyInfo.xcprivacy` is included and bundled automatically
 
 ### What It Declares
 
@@ -40,7 +40,7 @@ Two required components:
 
 **For SDK Developers:**
 
-- ✅ Already implemented in `ios/PrivacyInfo.xcprivacy`
+- ✅ Already implemented in `packages/core/ios/PrivacyInfo.xcprivacy`
 - ✅ Automatically bundled via CocoaPods
 
 **For App Developers:**

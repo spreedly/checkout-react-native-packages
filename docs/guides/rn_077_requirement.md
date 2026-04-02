@@ -55,6 +55,7 @@ React Native 0.76 ships Kotlin 1.9.25, creating an irreconcilable version confli
 
 - minSdkVersion: 26 (Android 8.0)
 - targetSdkVersion: 34
+- compileSdkVersion: 36
 - Kotlin: 2.0.21
 - NDK: 27.1.12297006
 

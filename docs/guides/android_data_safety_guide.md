@@ -1,7 +1,7 @@
 # Android Data Safety Guide
 
 **Version:** 1.0  
-**Last Updated:** March 2026
+**Last Updated:** March 2026  
 **Purpose:** Format-specific requirements for Google Play Console Data Safety section
 
 ## Overview

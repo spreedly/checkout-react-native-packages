@@ -1,48 +1,34 @@
 # 3DS Challenge Integration Guide
 
-**A step-by-step guide for integrating 3D Secure (3DS) authentication into your React Native app**
+This guide covers a production-ready 3DS challenge flow using `@spreedly/react-native-checkout`.
 
-## What You'll Learn
-
-This guide covers:
-
-- Understanding 3D Secure and when to use it
-- Setting up 3DS challenge flow in your React Native app
-- Handling all challenge events (success, failed, canceled)
-- Integrating with your backend for purchase/authorize flows
-- Best practices for error handling and user experience
+For SDK installation and initialization, see the [Integration Guide](./integration_guide.md).
 
 ## Overview
 
+Use 3DS when your transaction flow requires cardholder authentication before completion.
+
+Typical drivers:
+
+- Strong Customer Authentication (SCA) requirements
+- Reduced fraud and chargeback risk
+- Better issuer confidence for higher-value transactions
+
 3D Secure (3DS) is an authentication protocol that adds an extra layer of security for card-not-present transactions. It helps protect against fraudulent transactions by requiring the cardholder to verify their identity with their bank.
 
-**When to Use 3DS:**
-
-- **Regulatory Compliance** - SCA (Strong Customer Authentication) requirements in Europe (PSD2)
-- **Fraud Reduction** - Shift liability for fraudulent transactions to the card issuer
-- **Higher Authorization Rates** - Banks may approve more transactions with 3DS verification
-- **Customer Trust** - Visual security indicators increase checkout confidence
-
-**What the SDK does for you:**
+What the SDK does for you:
 
 - Displays secure, native 3DS challenge UI
 - Handles all user interaction with the bank's authentication
 - Communicates results back to your app via events
 - Manages the full challenge lifecycle automatically
 
-**What you need to do:**
-
-- Process purchase/authorize on your backend via Spreedly API
-- Retrieve `managedOrderToken` and `transactionToken` from the response
-- Call `showThreeDSChallenge()` with those tokens
-- Listen for challenge results and update your UI accordingly
+The SDK handles challenge presentation and emits the challenge result. Your app handles purchase initiation, UI state, and follow-up actions.
 
 ## Minimal Integration
 
-Here's the minimal code needed to integrate 3DS:
-
 ```typescript
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import {
   SpreedlyCore,
   SpreedlyEventEmitter,
@@ -50,17 +36,20 @@ import {
   type ThreeDSChallengeResult,
 } from '@spreedly/react-native-checkout';
 
-// 1. Set up event listener for 3DS results
 useEffect(() => {
   const subscription = SpreedlyEventEmitter.addListener(
     SpreedlyEventTypes.THREE_DS_CHALLENGE_RESULT,
     (result: ThreeDSChallengeResult) => {
-      if (result.status === 'success') {
-        // Payment authenticated successfully!
-        handlePaymentSuccess(result.transactionId);
-      } else {
-        // Challenge failed
-        handlePaymentFailed(result.message);
+      switch (result.status) {
+        case 'success':
+          handlePaymentSuccess(result.transactionId);
+          break;
+        case 'failed':
+          handlePaymentFailure(result.message);
+          break;
+        case 'canceled':
+          handlePaymentCanceled();
+          break;
       }
     }
   );
@@ -68,849 +57,224 @@ useEffect(() => {
   return () => subscription.remove();
 }, []);
 
-// 2. Process purchase and trigger 3DS challenge
-const handleCheckout = async () => {
-  // Call your backend to process purchase via Spreedly API
-  const { managedOrderToken, transactionToken } =
-    await processBackendPurchase();
-
-  // Show 3DS challenge UI
+const startThreeDSChallenge = (
+  managedOrderToken: string,
+  transactionToken: string
+) => {
   SpreedlyCore.showThreeDSChallenge(managedOrderToken, transactionToken);
 };
 ```
 
-That's it! Read on for complete implementation details and best practices.
+## How It Works
 
----
+1. App calls backend purchase endpoint with `paymentMethodToken`, amount, and currency.
+2. Backend performs Spreedly purchase/authorize request with 3DS support.
+3. Backend returns `managedOrderToken` and `transactionToken`.
+4. App calls `SpreedlyCore.showThreeDSChallenge(managedOrderToken, transactionToken)`.
+5. SDK presents challenge UI and emits `THREE_DS_CHALLENGE_RESULT`.
+6. App handles `success`, `failed`, or `canceled` and updates UI.
 
-## How It Works - Visual Flow
+## Implementation Steps
 
-```
-┌─────────────────────────────────────────────────────────────────────────┐
-│                           Your React Native App                          │
-└─────────────────────────────────────────────────────────────────────────┘
-                                    │
-                                    │ 1. User taps "Pay Now"
-                                    ▼
-┌─────────────────────────────────────────────────────────────────────────┐
-│                            Your Backend                                  │
-│                                                                          │
-│  • Receives payment request from app                                     │
-│  • Calls Spreedly Purchase/Authorize API with 3DS enabled               │
-│  • Returns managedOrderToken + transactionToken to app                  │
-└─────────────────────────────────────────────────────────────────────────┘
-                                    │
-                                    │ 2. Tokens returned to app
-                                    ▼
-┌─────────────────────────────────────────────────────────────────────────┐
-│  SpreedlyCore.showThreeDSChallenge(                                     │
-│    managedOrderToken,                                                    │
-│    transactionToken                                                      │
-│  )                                                                       │
-└─────────────────────────────────────────────────────────────────────────┘
-                                    │
-                                    │ 3. SDK presents 3DS challenge
-                                    ▼
-┌─────────────────────────────────────────────────────────────────────────┐
-│                    Native 3DS Challenge UI                               │
-│  ┌─────────────────────────────────────────────────────────────────┐   │
-│  │                                                                   │   │
-│  │    🏦 Your Bank                                                  │   │
-│  │                                                                   │   │
-│  │    Please verify your identity to complete this purchase         │   │
-│  │                                                                   │   │
-│  │    Amount: $99.99                                                │   │
-│  │    Merchant: Your Store                                          │   │
-│  │                                                                   │   │
-│  │    ┌─────────────────────────────────────────────┐              │   │
-│  │    │  Enter verification code: [______]          │              │   │
-│  │    └─────────────────────────────────────────────┘              │   │
-│  │                                                                   │   │
-│  │    [Cancel]                              [Verify]               │   │
-│  │                                                                   │   │
-│  └─────────────────────────────────────────────────────────────────┘   │
-└─────────────────────────────────────────────────────────────────────────┘
-                                    │
-                                    ├─→ User cancels
-                                    │   └→ Event: status = 'canceled' (if supported)
-                                    │
-                                    ├─→ Verification fails
-                                    │   └→ Event: status = 'failed', message = '...'
-                                    │
-                                    └─→ Verification succeeds ✓
-                                        │
-                                        ▼
-┌─────────────────────────────────────────────────────────────────────────┐
-│  Event: THREE_DS_CHALLENGE_RESULT                                       │
-│         status = 'success'                                              │
-│         transactionId = 'txn_abc123...'                                 │
-└─────────────────────────────────────────────────────────────────────────┘
-                                    │
-                                    ▼
-                              Done! ✓
-                    Proceed with order fulfillment
-```
-
-### Responsibility Summary
-
-| Component        | Responsibility                                                 |
-| ---------------- | -------------------------------------------------------------- |
-| **Your Backend** | Process purchase via Spreedly API, return tokens               |
-| **Your App**     | Initiate purchase, trigger 3DS challenge, handle result        |
-| **Spreedly SDK** | Display 3DS challenge UI, handle user interaction, emit result |
-
----
-
-## Quick Start
-
-Follow these steps to integrate 3DS into your React Native app:
-
-### Step 1: Import Required Modules
+### 1) Import Modules
 
 ```typescript
-import React, { useState, useEffect } from 'react';
-import { View, Button, Alert, Text, ActivityIndicator } from 'react-native';
+import React, { useEffect, useState } from 'react';
 import {
   SpreedlyCore,
   SpreedlyEventEmitter,
   SpreedlyEventTypes,
   type ThreeDSChallengeResult,
 } from '@spreedly/react-native-checkout';
+import {
+  processPurchase,
+  getManagedOrderToken,
+  getTransactionId,
+} from '../network/purchase';
 ```
 
-**Key imports:**
-
-- `SpreedlyCore`: Main module to call 3DS methods
-- `SpreedlyEventEmitter`: To listen for challenge result events
-- `SpreedlyEventTypes`: Event type constants
-- `ThreeDSChallengeResult`: TypeScript type for results
-
-### Step 2: Set Up State Variables
+### 2) Track Processing and Errors
 
 ```typescript
 const [isProcessing, setIsProcessing] = useState(false);
-const [paymentResult, setPaymentResult] = useState<string | null>(null);
 const [errorMessage, setErrorMessage] = useState<string | null>(null);
+const [showSuccessAlert, setShowSuccessAlert] = useState(false);
 ```
 
-**State variables:**
-
-- `isProcessing`: To show loading indicator during payment
-- `paymentResult`: Stores success message or transaction ID
-- `errorMessage`: To display error messages to the user
-
-### Step 3: Set Up Event Listener
-
-Add this in your component to listen for 3DS challenge results:
+### 3) Register the 3DS Result Listener
 
 ```typescript
 useEffect(() => {
-  // Listen for 3DS challenge results from the SDK
   const subscription = SpreedlyEventEmitter.addListener(
     SpreedlyEventTypes.THREE_DS_CHALLENGE_RESULT,
     (result: ThreeDSChallengeResult) => {
       switch (result.status) {
         case 'success':
-          console.log('3DS Challenge successful', result.transactionId);
-          setPaymentResult('Payment completed successfully!');
+          setShowSuccessAlert(true);
           setErrorMessage(null);
-          // Optionally notify your backend of successful authentication
-          notifyBackendSuccess(result.transactionId);
           break;
 
         case 'failed':
-          console.log('3DS Challenge failed:', result.message);
-          setPaymentResult(null);
-          setErrorMessage(result.message || '3DS verification failed');
+          setShowSuccessAlert(false);
+          setErrorMessage(result.message || '3DS authentication failed');
+          break;
+
+        case 'canceled':
+          setShowSuccessAlert(false);
+          setErrorMessage('3DS authentication was canceled');
           break;
       }
-      setIsProcessing(false);
     }
   );
 
-  // Clean up listener when component unmounts
-  return () => {
-    subscription.remove();
-  };
+  return () => subscription.remove();
 }, []);
 ```
 
-**Event handler breakdown:**
-
-- `result.status` tells you what happened: 'success' or 'failed'
-- `result.transactionId` is available on success
-- `result.message` provides error details on failure
-- Don't forget the cleanup function!
-
-### Step 4: Create the Payment Function
+### 4) Start Purchase and Show Challenge
 
 ```typescript
-const handlePayment = async () => {
-  setIsProcessing(true);
+const handleCheckout = async (
+  paymentMethodToken: string,
+  amount: number,
+  currencyCode = 'USD'
+) => {
+  if (isProcessing) return;
+
   setErrorMessage(null);
-  setPaymentResult(null);
+  setShowSuccessAlert(false);
+  setIsProcessing(true);
 
   try {
-    // Step 1: Call your backend to process the purchase
-    const response = await fetch('https://your-api.com/purchase', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        paymentMethodToken: selectedCard.token,
-        amount: cartTotal,
-        currency: 'USD',
-      }),
+    const purchaseResponse = await processPurchase({
+      paymentMethodToken,
+      amount,
+      currencyCode,
     });
 
-    const data = await response.json();
+    const managedOrderToken = getManagedOrderToken(purchaseResponse);
+    const transactionToken = getTransactionId(purchaseResponse);
 
-    // Step 2: Extract tokens from backend response
-    const { managedOrderToken, transactionToken } = data;
-
-    if (managedOrderToken && transactionToken) {
-      // Step 3: Show 3DS challenge using the SDK
-      // The SDK handles all the 3DS UI and flow automatically
-      SpreedlyCore.showThreeDSChallenge(managedOrderToken, transactionToken);
-    } else {
-      setErrorMessage('Missing required tokens for 3DS challenge');
-      setIsProcessing(false);
+    if (!managedOrderToken || !transactionToken) {
+      throw new Error('Missing required 3DS tokens from backend response');
     }
+
+    SpreedlyCore.showThreeDSChallenge(managedOrderToken, transactionToken);
   } catch (error) {
-    console.error('Error processing purchase:', error);
-    setErrorMessage((error as Error).message || 'Failed to process purchase');
+    setErrorMessage(
+      error instanceof Error ? error.message : 'Failed to process purchase'
+    );
+  } finally {
     setIsProcessing(false);
   }
 };
 ```
 
-**What this does:**
-
-1. Calls your backend to initiate the purchase via Spreedly API
-2. Extracts `managedOrderToken` and `transactionToken` from the response
-3. Calls `showThreeDSChallenge()` to present the 3DS challenge UI
-
-### Step 5: Add UI Components
-
-```typescript
-return (
-  <View style={styles.container}>
-    <Text style={styles.title}>Checkout</Text>
-
-    <View style={styles.cartSummary}>
-      <Text>Total: ${cartTotal.toFixed(2)}</Text>
-    </View>
-
-    <Button
-      title={isProcessing ? 'Processing...' : 'Pay Now'}
-      onPress={handlePayment}
-      disabled={isProcessing}
-    />
-
-    {isProcessing && <ActivityIndicator size="large" />}
-
-    {paymentResult && (
-      <View style={styles.successContainer}>
-        <Text style={styles.successText}> {paymentResult}</Text>
-      </View>
-    )}
-
-    {errorMessage && (
-      <View style={styles.errorContainer}>
-        <Text style={styles.errorText}> {errorMessage}</Text>
-        <Button title="Try Again" onPress={handlePayment} />
-      </View>
-    )}
-  </View>
-);
-```
-
----
-
 ## API Reference
 
 ### `SpreedlyCore.showThreeDSChallenge(managedOrderToken, transactionToken)`
 
-Displays the 3DS challenge UI to the user. The SDK handles all user interaction and emits a result event when complete.
-
-**Parameters:**
+Displays the native 3DS challenge UI.
 
 | Parameter           | Type     | Description                                                           |
 | ------------------- | -------- | --------------------------------------------------------------------- |
-| `managedOrderToken` | `string` | The managed order token from your backend's Spreedly API response     |
-| `transactionToken`  | `string` | The transaction token from your backend's purchase/authorize response |
-
-**Example:**
+| `managedOrderToken` | `string` | Managed order token returned by your backend                          |
+| `transactionToken`  | `string` | Transaction token returned by your backend purchase/authorize request |
 
 ```typescript
-SpreedlyCore.showThreeDSChallenge(
-  'mot_abc123xyz789', // managedOrderToken from backend
-  'txn_def456uvw012' // transactionToken from backend
-);
+SpreedlyCore.showThreeDSChallenge(managedOrderToken, transactionToken);
 ```
 
 ### `SpreedlyCore.hideThreeDSChallenge()`
 
-Programmatically dismisses the 3DS challenge UI. Use this for edge cases where you need to close the challenge (e.g., session timeout).
-
-**Example:**
+Dismisses an active challenge view when your flow requires a forced close (for example, timeout or screen teardown).
 
 ```typescript
-// Close challenge programmatically (use sparingly)
 SpreedlyCore.hideThreeDSChallenge();
 ```
 
 ### `SpreedlyEventTypes.THREE_DS_CHALLENGE_RESULT`
 
-Event emitted when the 3DS challenge completes or fails.
-
-**Event Data Type: `ThreeDSChallengeResult`**
+Event emitted after the challenge is completed, fails, or is canceled.
 
 ```typescript
 type ThreeDSChallengeResult =
   | { status: 'success'; transactionId?: string }
-  | { status: 'failed'; message?: string };
+  | { status: 'failed'; message?: string }
+  | { status: 'canceled' };
 ```
 
-**Result Status Values:**
+## Backend Requirements
 
-| Status    | Description                             | Action                                         |
-| --------- | --------------------------------------- | ---------------------------------------------- |
-| `success` | 3DS verification completed successfully | Proceed with order fulfillment                 |
-| `failed`  | 3DS verification failed                 | Show error, allow retry or alternative payment |
+Your backend should own all Spreedly API communication and return only what the app needs to continue the flow.
 
----
+Input to backend:
 
-## Backend Integration Requirements
+- `payment_method_token`
+- `amount`
+- `currency_code`
 
-Your backend must implement the purchase API endpoint that calls Spreedly's API and returns the required tokens:
-
-```
-Backend receives: payment_method_token, amount, currency
-Backend returns: managed_order_token, transaction_token
-```
-
-**Backend Implementation Notes:**
-
-1. **Use Spreedly's Purchase/Authorize API** with 3DS enabled
-2. **Extract `managed_order_token`** from the API response
-3. **Extract `transaction.token`** from the API response
-4. **Return both tokens** to your mobile app
-5. **Handle backend errors** gracefully and return appropriate error messages
-
-**Example Backend Response:**
+Expected backend response:
 
 ```json
 {
-  "success": true,
   "managedOrderToken": "mot_abc123xyz789",
   "transactionToken": "txn_def456uvw012"
 }
 ```
 
----
+Implementation notes:
 
-## Event Handling
-
-### Complete Event Handler Example
-
-```typescript
-useEffect(() => {
-  const subscription = SpreedlyEventEmitter.addListener(
-    SpreedlyEventTypes.THREE_DS_CHALLENGE_RESULT,
-    (result: ThreeDSChallengeResult) => {
-      switch (result.status) {
-        case 'success':
-          //  Success - proceed with order
-          handlePaymentSuccess(result.transactionId);
-          break;
-
-        case 'failed':
-          //  Failed - show error and offer retry
-          handlePaymentFailed(result.message);
-          break;
-      }
-    }
-  );
-
-  return () => subscription.remove();
-}, []);
-```
-
-### Success Handler
-
-```typescript
-const handlePaymentSuccess = (transactionId?: string) => {
-  setIsProcessing(false);
-  setPaymentResult('Payment successful!');
-  setErrorMessage(null);
-
-  // Navigate to success screen or show confirmation
-  Alert.alert('Payment Complete', 'Your order has been placed successfully!', [
-    {
-      text: 'View Order',
-      onPress: () =>
-        navigation.navigate('OrderConfirmation', { transactionId }),
-    },
-  ]);
-
-  // Optionally notify your backend
-  if (transactionId) {
-    notifyBackendOfSuccess(transactionId);
-  }
-};
-```
-
-### Failure Handler
-
-```typescript
-const handlePaymentFailed = (message?: string) => {
-  setIsProcessing(false);
-  setPaymentResult(null);
-
-  const errorMsg = message || '3DS verification failed. Please try again.';
-  setErrorMessage(errorMsg);
-
-  Alert.alert('Payment Failed', errorMsg, [
-    { text: 'Try Again', onPress: handlePayment },
-    { text: 'Use Different Card', onPress: () => setShowCardSelector(true) },
-    { text: 'Cancel', style: 'cancel' },
-  ]);
-};
-```
-
----
+1. Use Spreedly purchase/authorize endpoints with 3DS enabled.
+2. Extract `transaction.sca_authentication.managed_order_token`.
+3. Extract `transaction.token`.
+4. Return both values to the app in a stable response format.
+5. Return clear error messages and HTTP status codes for failure states.
 
 ## Error Handling
 
-### Common Error Scenarios
+### Common Scenarios
 
-| Error Type            | Cause                                   | User Action                     |
-| --------------------- | --------------------------------------- | ------------------------------- |
-| Challenge timeout     | User took too long to complete          | Retry the payment               |
-| Authentication failed | Wrong OTP/verification code             | Retry with correct code         |
-| Bank declined         | Issuing bank rejected authentication    | Contact bank or use other card  |
-| Network error         | Connection lost during challenge        | Check connection and retry      |
-| Invalid tokens        | Backend returned invalid/expired tokens | Retry from beginning            |
-| SDK not initialized   | `initSdk()` not called before challenge | Ensure SDK is initialized first |
+| Scenario              | Cause                                                  | Recommended handling                            |
+| --------------------- | ------------------------------------------------------ | ----------------------------------------------- |
+| Authentication failed | Issuer challenge failed                                | Show retry option and preserve cart state       |
+| User canceled         | User exited the challenge                              | Let user retry or choose another payment method |
+| Challenge timeout     | Challenge not completed in time                        | Offer retry and reset loading state             |
+| Invalid tokens        | Missing/expired `managedOrderToken`/`transactionToken` | Restart checkout from backend purchase call     |
+| Network error         | Purchase request failed before challenge               | Show network error and allow retry              |
 
-### Error Handling Best Practices
+### Production Guidance
 
-#### 1. Always Show User-Friendly Messages
+- Always clear loading state in both success and failure paths.
+- Do not expose raw issuer/system errors directly to end users.
+- Keep diagnostic logs free of sensitive payment data.
+- If a timeout policy is required, call `hideThreeDSChallenge()` and recover the checkout state.
 
-```typescript
-case 'failed':
-  //  Bad: Show technical error
-  setErrorMessage(result.message);
-
-  //  Good: Show friendly message with action
-  let friendlyMessage = 'Unable to verify your payment. Please try again.';
-
-  if (result.message?.includes('timeout')) {
-    friendlyMessage = 'Verification timed out. Please try again.';
-  } else if (result.message?.includes('canceled')) {
-    friendlyMessage = 'Verification was cancelled.';
-  } else if (result.message?.includes('network')) {
-    friendlyMessage = 'Connection lost. Please check your internet and try again.';
-  }
-
-  setErrorMessage(friendlyMessage);
-  break;
-```
-
-#### 2. Provide Clear Retry Options
+Example of user-safe failure mapping:
 
 ```typescript
-{
-  errorMessage && (
-    <View style={styles.errorContainer}>
-      <Text style={styles.errorText}>{errorMessage}</Text>
-
-      <View style={styles.buttonRow}>
-        <Button title="Try Again" onPress={handlePayment} />
-        <Button
-          title="Use Different Card"
-          onPress={() => navigation.navigate('SelectCard')}
-        />
-      </View>
-    </View>
-  );
-}
-```
-
-#### 3. Log Errors for Debugging
-
-```typescript
-case 'failed':
-  // Log technical details for debugging
-  console.error('3DS Challenge Failed:', {
-    message: result.message,
-    timestamp: new Date().toISOString(),
-    transactionAttempt: currentTransactionId,
-  });
-
-  // Show user-friendly message
-  setErrorMessage('Payment verification failed. Please try again.');
-  break;
-```
-
-#### 4. Handle Session Timeouts
-
-```typescript
-// Set a timeout to auto-hide challenge after extended period
-const CHALLENGE_TIMEOUT = 5 * 60 * 1000; // 5 minutes
-
-useEffect(() => {
-  let timeoutId: NodeJS.Timeout;
-
-  if (isProcessing) {
-    timeoutId = setTimeout(() => {
-      SpreedlyCore.hideThreeDSChallenge();
-      setIsProcessing(false);
-      setErrorMessage('Session timed out. Please try again.');
-    }, CHALLENGE_TIMEOUT);
-  }
-
-  return () => clearTimeout(timeoutId);
-}, [isProcessing]);
-```
-
----
-
-## Security Considerations
-
-### Critical Security Rules
-
-1. **Never expose Spreedly API credentials** in your mobile app
-2. **Always process purchases** through your secure backend
-3. **Validate tokens** on your backend before using them
-4. **Implement session timeouts** for incomplete 3DS flows
-5. **Log 3DS events** for compliance and debugging (without sensitive data)
-
-### Secure Implementation Checklist
-
-- [ ] API keys are only on your backend, never in the mobile app
-- [ ] All purchase requests go through your backend
-- [ ] Backend validates all incoming requests
-- [ ] Tokens are validated before use
-- [ ] Session timeouts are implemented
-- [ ] Logging doesn't include sensitive card data
-- [ ] HTTPS is used for all network requests
-
----
-
-## Best Practices
-
-### 1. Always Clean Up Event Listeners
-
-```typescript
-useEffect(() => {
-  const subscription = SpreedlyEventEmitter.addListener(
-    SpreedlyEventTypes.THREE_DS_CHALLENGE_RESULT,
-    handleChallengeResult
-  );
-
-  // This cleanup function runs when component unmounts
-  return () => subscription.remove();
-}, []);
-```
-
-### 2. Handle All Event States
-
-```typescript
-const handleChallengeResult = (result: ThreeDSChallengeResult) => {
-  switch (result.status) {
-    case 'success':
-      // Handle success
-      handlePaymentSuccess(result.transactionId);
-      break;
-
-    case 'failed':
-      // Handle failure
-      handlePaymentFailed(result.message);
-      break;
-
-    default:
-      // Handle unexpected status
-      console.warn('Unexpected 3DS result status:', result);
-      setErrorMessage('Unexpected error occurred');
-      setIsProcessing(false);
-  }
+const toUserMessage = (rawMessage?: string): string => {
+  if (!rawMessage) return 'Unable to verify payment. Please try again.';
+  if (rawMessage.includes('timeout'))
+    return 'Verification timed out. Try again.';
+  if (rawMessage.includes('network'))
+    return 'Network issue detected. Check your connection and retry.';
+  return 'Payment verification failed. Please try again.';
 };
 ```
-
-### 3. Show Loading State During Challenge
-
-```typescript
-const [isProcessing, setIsProcessing] = useState(false);
-
-// Set loading when starting
-const handlePayment = async () => {
-  setIsProcessing(true);
-  // ... process payment
-};
-
-// Clear loading when result received
-useEffect(() => {
-  const subscription = SpreedlyEventEmitter.addListener(
-    SpreedlyEventTypes.THREE_DS_CHALLENGE_RESULT,
-    (result) => {
-      setIsProcessing(false); // Always clear loading
-      // ... handle result
-    }
-  );
-  return () => subscription.remove();
-}, []);
-```
-
-### 4. Prevent Double Submissions
-
-```typescript
-const handlePayment = async () => {
-  // Prevent double-tap
-  if (isProcessing) return;
-
-  setIsProcessing(true);
-  // ... rest of payment logic
-};
-```
-
-### 5. Provide Clear UI Feedback
-
-```typescript
-{
-  isProcessing && (
-    <View style={styles.processingOverlay}>
-      <ActivityIndicator size="large" color="#007AFF" />
-      <Text style={styles.processingText}>Verifying your payment...</Text>
-      <Text style={styles.processingSubtext}>
-        Please complete the verification in the popup
-      </Text>
-    </View>
-  );
-}
-```
-
----
-
-## Complete Example
-
-Here's a complete example component integrating 3DS:
-
-```typescript
-import React, { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  Button,
-  Alert,
-  ActivityIndicator,
-  StyleSheet,
-} from 'react-native';
-import {
-  SpreedlyCore,
-  SpreedlyEventEmitter,
-  SpreedlyEventTypes,
-  type ThreeDSChallengeResult,
-} from '@spreedly/react-native-checkout';
-
-interface CheckoutScreenProps {
-  cartTotal: number;
-  paymentMethodToken: string;
-  onSuccess: (transactionId: string) => void;
-}
-
-export function CheckoutScreen({
-  cartTotal,
-  paymentMethodToken,
-  onSuccess,
-}: CheckoutScreenProps) {
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
-  // Set up 3DS result listener
-  useEffect(() => {
-    const subscription = SpreedlyEventEmitter.addListener(
-      SpreedlyEventTypes.THREE_DS_CHALLENGE_RESULT,
-      (result: ThreeDSChallengeResult) => {
-        setIsProcessing(false);
-
-        switch (result.status) {
-          case 'success':
-            setErrorMessage(null);
-            Alert.alert('Success', 'Payment completed successfully!');
-            if (result.transactionId) {
-              onSuccess(result.transactionId);
-            }
-            break;
-
-          case 'failed':
-            setErrorMessage(result.message || 'Payment verification failed');
-            break;
-        }
-      }
-    );
-
-    return () => subscription.remove();
-  }, [onSuccess]);
-
-  const handlePayment = async () => {
-    if (isProcessing) return;
-
-    setIsProcessing(true);
-    setErrorMessage(null);
-
-    try {
-      // Call your backend to process the purchase
-      const response = await fetch('https://your-api.com/purchase', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          paymentMethodToken,
-          amount: cartTotal,
-          currency: 'USD',
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to process payment');
-      }
-
-      const data = await response.json();
-      const { managedOrderToken, transactionToken } = data;
-
-      if (managedOrderToken && transactionToken) {
-        // Show 3DS challenge
-        SpreedlyCore.showThreeDSChallenge(managedOrderToken, transactionToken);
-      } else {
-        throw new Error('Missing tokens for 3DS verification');
-      }
-    } catch (error) {
-      setIsProcessing(false);
-      setErrorMessage(
-        error instanceof Error ? error.message : 'Payment failed'
-      );
-    }
-  };
-
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Complete Your Purchase</Text>
-
-      <View style={styles.summary}>
-        <Text style={styles.totalLabel}>Total:</Text>
-        <Text style={styles.totalAmount}>${cartTotal.toFixed(2)}</Text>
-      </View>
-
-      {errorMessage && (
-        <View style={styles.errorContainer}>
-          <Text style={styles.errorText}>{errorMessage}</Text>
-        </View>
-      )}
-
-      <Button
-        title={isProcessing ? 'Processing...' : `Pay $${cartTotal.toFixed(2)}`}
-        onPress={handlePayment}
-        disabled={isProcessing}
-      />
-
-      {isProcessing && (
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" />
-          <Text style={styles.loadingText}>
-            Please complete verification...
-          </Text>
-        </View>
-      )}
-    </View>
-  );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-  },
-  summary: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 20,
-    padding: 15,
-    backgroundColor: '#f5f5f5',
-    borderRadius: 8,
-  },
-  totalLabel: {
-    fontSize: 18,
-  },
-  totalAmount: {
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  errorContainer: {
-    backgroundColor: '#ffebee',
-    padding: 15,
-    borderRadius: 8,
-    marginBottom: 20,
-  },
-  errorText: {
-    color: '#c62828',
-  },
-  loadingContainer: {
-    alignItems: 'center',
-    marginTop: 20,
-  },
-  loadingText: {
-    marginTop: 10,
-    color: '#666',
-  },
-});
-```
-
----
 
 ## Troubleshooting
 
-### Common Issues
+| Issue                   | Cause                        | Resolution                                          |
+| ----------------------- | ---------------------------- | --------------------------------------------------- |
+| Challenge not appearing | SDK not initialized          | Ensure SDK initialization completes before checkout |
+| Event not firing        | Listener registered too late | Register listener during screen mount               |
+| Duplicate challenge     | Repeated checkout submission | Guard with `isProcessing` before purchase call      |
+| Missing tokens          | Backend response mismatch    | Verify backend returns both required token fields   |
 
-| Issue                         | Cause                          | Solution                                         |
-| ----------------------------- | ------------------------------ | ------------------------------------------------ |
-| Challenge not appearing       | SDK not initialized            | Call `SpreedlyCore.initSdk()` before showing 3DS |
-| Events not firing             | Listener not set up            | Ensure `useEffect` runs before payment           |
-| Challenge shows twice         | Duplicate calls                | Add `isProcessing` guard to prevent double calls |
-| "No activity available" error | App backgrounded               | Keep app in foreground during checkout           |
-| Tokens undefined              | Backend not returning properly | Check backend API response structure             |
+## Related Resources
 
-## Summary
-
-Integrating 3DS requires these key steps:
-
-1. **Import modules** - Get `SpreedlyCore`, `SpreedlyEventEmitter`, and types
-2. **Set up listener** - Use `useEffect` to add event listener before payment
-3. **Call backend** - Process purchase and get tokens
-4. **Show challenge** - Call `showThreeDSChallenge()` with tokens
-5. **Handle results** - Switch on `result.status` to handle success/failure
-6. **Clean up** - Remove listener when component unmounts
-
-## Support & Resources
-
-**Need Help?**
-
-- 📖 [Spreedly API Documentation](https://docs.spreedly.com/)
-- 💻 Review the example app in `example/src/screens/threeDsScreen/ThreeDsScreen.tsx`
-- 🔍 Check console for error messages and warnings
-- ⚙️ Ensure React Native version 0.77+ is installed
-
-**Related Guides:**
-
-- [Integration Guide](./integration_guide.md) - Full SDK integration
-- [CVV Recaching Guide](./cvv_recaching_guide.md) - Update saved card CVV
-- [Theme Guide](./theme_guide.md) - Customize SDK appearance
-- [Security Guide](./security.md) - Security best practices
-
----
-
-**Last Updated**: March 2026
+- [Integration Guide](./integration_guide.md)
+- [Security Guide](./security.md)
+- [Theme Guide](./theme_guide.md)
+- [CVV Recaching Guide](./cvv_recaching_guide.md)

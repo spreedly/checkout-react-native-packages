@@ -1,7 +1,7 @@
 # Privacy Policy - Spreedly React Native SDK
 
 **Version:** 1.0  
-**Last Updated:** March 2026
+**Last Updated:** March 20, 2026
 
 ## Overview
 

@@ -28,15 +28,16 @@ See the complete [Security Integration Checklist](#-security-integration-checkli
 
 1. [Prerequisites](#prerequisites)
 2. [Installation](#installation)
-3. [Quick Start](#quick-start)
-4. [Express Checkout Integration](#express-checkout-integration)
-5. [Hosted Fields Integration](#hosted-fields-integration)
-6. [Advanced Configuration](#advanced-configuration)
-7. [Payment Result Handling](#payment-result-handling)
-8. [Error Handling](#error-handling)
-9. [Customization](#customization)
-10. [API Reference](#api-reference)
-11. [Best Practices](#best-practices)
+3. [Production Integration Checklist](#production-integration-checklist)
+4. [Quick Start](#quick-start)
+5. [Express Checkout Integration](#express-checkout-integration)
+6. [Hosted Fields Integration](#hosted-fields-integration)
+7. [Advanced Configuration](#advanced-configuration)
+8. [Payment Result Handling](#payment-result-handling)
+9. [Error Handling](#error-handling)
+10. [Customization](#customization)
+11. [API Reference](#api-reference)
+12. [Best Practices](#best-practices)
     - [Security Best Practices](#security-best-practices)
       - [API Key & Environment Key Security](#1-api-key-and-environment-key-security)
       - [Mobile App Security](#2-mobile-app-security) (Screenshot Prevention, Screen Recording)
@@ -44,8 +45,8 @@ See the complete [Security Integration Checklist](#-security-integration-checkli
       - [Security Integration Checklist](#-security-integration-checklist)
     - [Performance Best Practices](#performance-best-practices)
     - [UX Best Practices](#ux-best-practices)
-12. [Troubleshooting](#troubleshooting)
-13. [Comprehensive Troubleshooting Checklist](#comprehensive-troubleshooting-checklist)
+13. [Troubleshooting](#troubleshooting)
+14. [Comprehensive Troubleshooting Checklist](#comprehensive-troubleshooting-checklist)
 
 ---
 
@@ -91,7 +92,7 @@ The Spreedly SDK requires modern React Native versions to leverage the latest se
   - **Required for**: New Architecture support, improved native module performance, and security patches
   - **0.77+**: Minimum version with Kotlin 2.0.21 and stable Fabric/TurboModules support
   - **0.79+**: Recommended for latest security updates and performance optimizations
-- **React**: 19.x
+- **React**: 18.2+
   - **Required for**: React Native 0.77+ compatibility and modern hook implementations
   - **Concurrent Features**: Enables better performance for payment form interactions
 - **Node.js**: 18+
@@ -769,6 +770,22 @@ cd android && ./gradlew dependencies --configuration implementation | grep spree
 
 ---
 
+## Production Integration Checklist
+
+Use this checklist before shipping to production users.
+
+| Item                  | What to verify                                                       | Reference                                                                                         |
+| --------------------- | -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| Package access        | GitHub Packages credentials are configured and valid                 | [Installation](#installation)                                                                     |
+| Backend auth          | Backend issues fresh auth parameters per payment session             | [Authentication Parameters](#authentication-parameters)                                           |
+| SDK init timing       | SDK initialization completes before rendering payment UI             | [Quick Start](#quick-start)                                                                       |
+| Error handling        | App handles failure states and maps SDK errors correctly             | [Error Handling](#error-handling)                                                                 |
+| Security controls     | No sensitive values in logs, secure storage and UI controls reviewed | [Security](security.md)                                                                           |
+| Privacy and telemetry | Team reviewed privacy and centralized logging behavior               | [Unified Privacy](unified_privacy.md), [Central Logging](../development/CENTRAL_LOGGING_GUIDE.md) |
+| Platform minimums     | Android and iOS deployment targets satisfy SDK requirements          | [Prerequisites](#prerequisites), [RN 0.77+ Requirements](rn_077_requirement.md)                   |
+
+---
+
 ## 🚀 Quick Reference
 
 ### Most Common Integration Patterns
@@ -1173,8 +1190,8 @@ export function handlePaymentResult(result: PaymentResultRN): void {
   switch (mapped.kind) {
     case 'success':
       // Payment completed successfully
-      console.log('Payment token:', mapped.token);
-      // Send token to your backend for processing
+      // Send mapped.token to your backend over HTTPS — never log it
+      sendTokenToBackend(mapped.token);
       break;
 
     case 'validation':
@@ -1308,12 +1325,12 @@ export function usePaymentWithRetry() {
   const maxRetries = 3;
 
   const submitPayment = async (
-    fields: FieldDescriptor[],
-    options?: any
+    formFieldTypes: string[],
+    options?: Partial<CreateCreditCardOptions>
   ): Promise<PaymentResultRN> => {
     try {
       const result = await SpreedlyCore.createCreditCard({
-        fields,
+        formFieldTypes,
         ...options,
       });
 
@@ -1467,9 +1484,13 @@ Create a payment method using hosted fields.
 
 **Parameters:**
 
-- `options.fields: FieldDescriptor[]` - Array of field configurations
-- `options.metadata?: object` - Additional metadata
-- `options.additionalFields?: object` - Additional field values
+- `options.formFieldTypes: string[]` - **Required.** Array of form field type strings that identify the hosted fields on screen (e.g., values from `FormFieldTypes`)
+- `options.metadata?: { [key: string]: string }` - Additional metadata key-value pairs
+- `options.additionalFields?: { [key: string]: string }` - Additional field values (e.g., `first_name`, `last_name`)
+- `options.fields?: Array<{ type: string; required?: boolean }>` - Optional field configuration overrides
+- `options.allowBlankName?: boolean` - Allow blank cardholder name
+- `options.allowExpiredDate?: boolean` - Allow expired expiry dates
+- `options.allowBlankDate?: boolean` - Allow blank expiry date
 
 **Returns:** Promise resolving to payment result
 
@@ -1654,6 +1675,11 @@ const SpreedlyEventTypes = {
   PAYMENT_BOTTOM_SHEET_RESULT: 'onPaymentBottomSheetResult',
   RECACHE_RESULT: 'onRecacheResult',
   THREE_DS_CHALLENGE_RESULT: 'onThreeDSChallengeResult',
+  GATEWAY_SPECIFIC_3DS_TRIGGER_COMPLETION:
+    'onGatewaySpecific3DSTriggerCompletion',
+  GATEWAY_SPECIFIC_3DS_CHALLENGE_READY: 'onGatewaySpecific3DSChallengeReady',
+  GATEWAY_SPECIFIC_3DS_RESULT: 'onGatewaySpecific3DSResult',
+  OFFSITE_PAYMENT_RESULT: 'onOffsitePaymentResult',
 } as const;
 ```
 
@@ -2481,13 +2507,16 @@ cd android
 Enable debug logging for troubleshooting:
 
 ```typescript
-// Add to your initialization
 if (__DEV__) {
   console.log('Spreedly SDK Debug Mode Enabled');
 
-  // Log all payment events
-  SpreedlyCore.addListener('onPaymentResult');
-  // Add custom debugging here
+  SpreedlyEventEmitter.addListener(
+    SpreedlyEventTypes.PAYMENT_BOTTOM_SHEET_RESULT,
+    (result) => {
+      const mapped = mapPaymentResult(result);
+      console.log('Payment result kind:', mapped.kind);
+    }
+  );
 }
 ```
 
@@ -2659,13 +2688,25 @@ Contact Spreedly support if:
 - [ ] Require help with custom build configurations
 - [ ] Experience issues specific to your payment processor integration
 
-**Support Information to Provide:**
+**OK to share with Spreedly Support:**
 
-- Complete error messages and stack traces
-- Platform and version information (React Native, iOS, Android)
-- Build logs (with sensitive information redacted)
+- SDK version (`@spreedly/react-native-checkout` version from `package.json`)
+- Approximate time of the issue (UTC)
+- Masked `environmentKey` (first 4 characters only)
+- Session ID from Datadog global attributes (if SDK telemetry is active)
+- Error type / error code from `mapPaymentResult` (e.g., `API_ERROR`, `NETWORK_ERROR`)
+- HTTP status code if shown in error details
+- Device OS and platform level (e.g., Android 14, iOS 17)
+- React Native version
 - Steps to reproduce the issue
-- Environment details (development, staging, production)
+
+**Never share with Spreedly Support:**
+
+- Full card number or CVV
+- Full `environmentKey`
+- Raw error responses that could contain tokens or PII
+- Complete auth signatures or certificate tokens
+- Contents of `.env` files or GitHub tokens
 
 ---
 
