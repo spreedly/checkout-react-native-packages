@@ -1,10 +1,27 @@
 # CHANGELOG
 
+## [1.0.0] - 2026-04-06
+
+### 🔄 Changed
+
+  - Feat: Added go-live docs and ci runbooks
+  - Feat: Monorepo setup for dependency seperation
+
+### 📦 Native SDK Versions
+
+| Platform | SDK                  | Version |
+| -------- | -------------------- | ------- |
+| Android  | checkout-android     | 0.12.1 |
+| iOS      | checkout-ios-package | 1.2.2 |
+
+---
+
+
 ## [0.3.1-beta.1] - 2026-04-02
 
 ### 🐛 Fixed
 
-  - Update codegenconfig for spreedly core package
+- Update codegenconfig for spreedly core package
 
 ### 📦 Native SDK Versions
 
@@ -14,25 +31,26 @@
 | iOS      | checkout-ios-package | 1.2.2   |
 
 ---
+
 ## [0.3.1-beta.0] - 2026-04-02
 
 ### ✨ Added
 
-  - Workflow and integration config refactoring
-  - Documentation updates
-  - Modular dependency approch added
+- Workflow and integration config refactoring
+- Documentation updates
+- Modular dependency approch added
 
 ### 🐛 Fixed
 
-  - Update app distribution workflow to match mono repo architecture
-  - Release docs updated
-  - Dependabot workflow fix
-  - Packages export fix
+- Update app distribution workflow to match mono repo architecture
+- Release docs updated
+- Dependabot workflow fix
+- Packages export fix
 
 ### 🔄 Changed
 
-  - Feat: Added gitleaks config to CI Workflow
-  - Fix: 3ds gateway race condition fix
+- Feat: Added gitleaks config to CI Workflow
+- Fix: 3ds gateway race condition fix
 
 ### 📦 Native SDK Versions
 
