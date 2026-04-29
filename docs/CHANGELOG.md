@@ -1,21 +1,46 @@
 # CHANGELOG
 
-## [1.0.0] - 2026-04-06
+## [1.0.2] - 2026-04-29
 
 ### 🔄 Changed
 
-  - Feat: Added go-live docs and ci runbooks
-  - Feat: Monorepo setup for dependency seperation
+  - Fix: dependabot config updates and security vulnerablity fix
+  - Fix: Scope Dependabot to SDK and fix example keyboard layout
+  - Chore: Dependabot ignore for react-native-screens and example Gemfile.lock refresh
+  - Fix: Patch basic-ftp and follow-redirects vulnerabilities
+  - Fix: CodeQL SDK paths and Gradle Maven repos
+  - Chore: Consolidate Dependabot Gemfile and CI action bumps
+  - Fix: Firebase android auto version bump
+  - Fix: Patch transitive deps, addressable, and Stripe APM install docs
+  - Fix: Align iOS CocoaPods CI with nightly workflow
+  - Feat: App distribution workflows and Xcode Cloud integration
+  - Chore: Bump Kotlin 2.3.10 and Spreedly Android SDK 0.13.0
 
 ### 📦 Native SDK Versions
 
 | Platform | SDK                  | Version |
 | -------- | -------------------- | ------- |
-| Android  | checkout-android     | 0.12.1 |
+| Android  | checkout-android     | 0.13.0 |
 | iOS      | checkout-ios-package | 1.2.2 |
 
 ---
 
+
+## [1.0.0] - 2026-04-06
+
+### 🔄 Changed
+
+- Feat: Added go-live docs and ci runbooks
+- Feat: Monorepo setup for dependency seperation
+
+### 📦 Native SDK Versions
+
+| Platform | SDK                  | Version |
+| -------- | -------------------- | ------- |
+| Android  | checkout-android     | 0.12.1  |
+| iOS      | checkout-ios-package | 1.2.2   |
+
+---
 
 ## [0.3.1-beta.1] - 2026-04-02
 
