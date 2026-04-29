@@ -90,7 +90,7 @@ The Spreedly SDK requires modern React Native versions to leverage the latest se
 
 - **React Native**: 0.77+ (recommended 0.79+)
   - **Required for**: New Architecture support, improved native module performance, and security patches
-  - **0.77+**: Minimum version with Kotlin 2.0.21 and stable Fabric/TurboModules support
+  - **0.77+**: Minimum version with Kotlin Gradle plugin 2.0.21 (RN default), **Kotlin stdlib 2.3.10** for Spreedly native SDKs, and stable Fabric/TurboModules support
   - **0.79+**: Recommended for latest security updates and performance optimizations
 - **React**: 18.2+
   - **Required for**: React Native 0.77+ compatibility and modern hook implementations
@@ -107,13 +107,13 @@ The Spreedly SDK requires modern React Native versions to leverage the latest se
 
 **Android:**
 
-- Minimum SDK: 26
-- Target SDK: 34
-- Compile SDK: 36
-- NDK: 27.1.12297006
-- **Kotlin**: 2.0.21+ (required for compatibility)
-- **Android Gradle Plugin**: 8.7.2+ (required for Kotlin 2.0.21+)
-- **Gradle**: 8.9+ (automatically managed by wrapper)
+- **Minimum SDK**: **26**
+- **Target SDK**: **34**
+- **Compile SDK**: **36**
+- **NDK**: 27.1.12297006
+- **Kotlin**: **2.3.10** for **kotlin-stdlib** (`ext.kotlinVersion`); the **Kotlin Gradle plugin** stays at **React Native’s default (2.0.21)** — do **not** pin `kotlin-gradle-plugin` to 2.3.10 (see [Step 5](#step-5-android-setup)).
+- **Android Gradle Plugin**: **8.10.1+** (AGP 8.10.x supports `compileSdk` 36).
+- **Gradle**: **8.11.1+** (use `gradle-wrapper.properties`; required for AGP 8.10.x).
 
 **iOS:**
 
@@ -615,6 +615,8 @@ cd ..
 
 ```gradle
 // android/build.gradle
+apply from: "../node_modules/@spreedly/react-native-checkout/scripts/spreedly_github_setup.gradle"
+
 buildscript {
     ext {
         buildToolsVersion = "35.0.0"
@@ -623,32 +625,53 @@ buildscript {
         targetSdkVersion = 34
         ndkVersion = "27.1.12297006"
 
-        // REQUIRED: Kotlin version must be 2.0.21+ for Spreedly SDK compatibility
-        kotlinVersion = "2.0.21"
+        // kotlin-stdlib alignment with Spreedly native SDKs (Kotlin 2.3 metadata)
+        kotlinVersion = "2.3.10"
+        androidGradlePluginVersion = "8.10.1"
+    }
+    repositories {
+        google()
+        mavenCentral()
     }
     dependencies {
-        // REQUIRED: Android Gradle Plugin 8.7.2+ for Kotlin 2.0.21+ support
-        classpath("com.android.tools.build:gradle:8.7.2")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
+        classpath("com.android.tools.build:gradle:${androidGradlePluginVersion}")
+        classpath("com.facebook.react:react-native-gradle-plugin")
+        // Do NOT use kotlinVersion here — pin KGP to 2.3.10 breaks React Native’s Gradle plugin.
+        // Omit the version so Gradle resolves KGP 2.0.21 (React Native 0.77 default).
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin")
+    }
+}
+
+apply plugin: "com.facebook.react.rootproject"
+
+// Spreedly native SDKs ship Kotlin 2.3 libraries while RN 0.77 uses KGP 2.0.21
+subprojects { subproject ->
+    subproject.tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+        kotlinOptions {
+            freeCompilerArgs += "-Xskip-metadata-version-check"
+        }
     }
 }
 ```
 
 **Why these versions are required:**
 
-- **Kotlin 2.0.21+**: The Spreedly SDK uses modern Kotlin features and Compose integration
-- **Android Gradle Plugin 8.7.2+**: Required for Kotlin 2.0.21+ compatibility
+- **Kotlin stdlib 2.3.10**: Spreedly Android native artifacts (e.g. `0.13.x`) are compiled with Kotlin 2.3; `ext.kotlinVersion` drives `kotlin-stdlib` for Spreedly RN packages.
+- **Kotlin Gradle plugin unpinned**: React Native 0.77 expects **KGP 2.0.21**. Pinning `kotlin-gradle-plugin` to `$kotlinVersion` (2.3.10) causes Gradle plugin API mismatches.
+- **`-Xskip-metadata-version-check`**: Lets KGP 2.0.21 compile against Kotlin 2.3–metadata dependencies.
+- **Android Gradle Plugin 8.10.1+**: Required for **`compileSdk` 36** and compatibility with `androidx.browser:browser:1.9.0` AAR metadata (transitive from Spreedly native SDKs).
+- **Gradle 8.11.1+**: Required for AGP 8.10.x — set in **`android/gradle/wrapper/gradle-wrapper.properties`** (`distributionUrl=.../gradle-8.11.1-bin.zip`).
 - **NDK 27.1.12297006**: Required for React Native 0.77+ native module compilation
 
 **Version Compatibility Matrix:**
 
-| React Native | Kotlin  | Android Gradle Plugin | Gradle | Status                                         |
-| ------------ | ------- | --------------------- | ------ | ---------------------------------------------- |
-| 0.77+        | 2.0.21+ | 8.7.2+                | 8.9+   | ✅ **Supported**                               |
-| 0.76         | 1.9.25  | 8.7.2+                | 8.9+   | ❌ **Not Supported** (Kotlin version mismatch) |
-| 0.75         | 1.9.25  | 8.5.2                 | 8.8    | ❌ **Not Supported**                           |
+| React Native | Kotlin (stdlib) | KGP (RN) | Android Gradle Plugin | Gradle  | Status                                             |
+| ------------ | --------------- | -------- | --------------------- | ------- | -------------------------------------------------- |
+| 0.77+        | 2.3.10          | 2.0.21   | 8.10.1+               | 8.11.1+ | ✅ **Supported**                                   |
+| 0.76         | —               | 1.9.25   | —                     | —       | ❌ **Not Supported** (Kotlin / toolchain mismatch) |
+| 0.75         | —               | 1.9.25   | —                     | —       | ❌ **Not Supported**                               |
 
-⚠️ **Important**: If you're upgrading from an older React Native version, you must update all these versions together to avoid compatibility issues.
+⚠️ **Important**: If you're upgrading from an older React Native version, update **AGP, Gradle wrapper, `compileSdk`, kotlin stdlib, and** the `subprojects` compiler flag **together** to avoid compatibility issues.
 
 #### Configure Private Android Dependencies
 
@@ -676,6 +699,8 @@ allprojects {
 - Reads GitHub credentials from environment variables or `.env` file
 - Automatically handles authentication for private Android dependencies
 - Maintains fallback to standard repositories (Google, Maven Central)
+
+Also ensure **`android/gradle/wrapper/gradle-wrapper.properties`** uses **Gradle 8.11.1+** (e.g. `distributionUrl=https\://services.gradle.org/distributions/gradle-8.11.1-bin.zip`). AGP **8.10.1** requires a compatible Gradle version; mismatches cause sync failures before dependency resolution.
 
 #### Verify Android Setup
 
@@ -734,7 +759,7 @@ Before proceeding with integration, ensure you have completed these steps:
 - [ ] **GitHub Token**: Created with `read:packages`, `repo`, and `read:org` permissions
 - [ ] **Credentials Ready**: `GITHUB_USERNAME` and `GITHUB_TOKEN` available
 - [ ] **Package Manager**: Configured for GitHub Packages (NPM/Yarn)
-- [ ] **Version Compatibility**: Verified Kotlin 2.0.21+ and Android Gradle Plugin 8.7.2+
+- [ ] **Version Compatibility**: Verified **Kotlin stdlib 2.3.10**, **AGP 8.10.1+**, **Gradle wrapper 8.11.1+**, and **`-Xskip-metadata-version-check`** (see [Step 5](#step-5-android-setup))
 - [ ] **iOS Configuration**: Updated Podfile with `spreedly_pods_setup.rb`
 - [ ] **Android Configuration**: Updated `build.gradle` with `spreedly_github_setup.gradle`
 - [ ] **Environment Variables**: Set `GITHUB_USERNAME` and `GITHUB_TOKEN`
@@ -745,8 +770,9 @@ Before proceeding with integration, ensure you have completed these steps:
 ```bash
 # 1. Check version compatibility (IMPORTANT for Android)
 # Ensure your android/build.gradle has:
-# - kotlinVersion = "2.0.21" (or higher)
-# - Android Gradle Plugin 8.7.2+
+# - kotlinVersion = "2.3.10" (stdlib; KGP unpinned — RN 2.0.21)
+# - Android Gradle Plugin 8.10.1+ and Gradle wrapper 8.11.1+
+# - subprojects { KotlinCompile freeCompilerArgs += "-Xskip-metadata-version-check" }
 
 # 2. Configure package manager (choose one)
 npm config set @spreedly:registry https://npm.pkg.github.com
@@ -2442,13 +2468,20 @@ android {
 // android/build.gradle
 buildscript {
     ext {
-        // Update these versions to match Spreedly SDK requirements
-        kotlinVersion = "2.0.21"  // Must be 2.0.21 or higher
+        kotlinVersion = "2.3.10"
+        androidGradlePluginVersion = "8.10.1"
     }
     dependencies {
-        // Update Android Gradle Plugin for Kotlin 2.0.21+ compatibility
-        classpath("com.android.tools.build:gradle:8.7.2")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
+        classpath("com.android.tools.build:gradle:${androidGradlePluginVersion}")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin")
+    }
+}
+
+subprojects { subproject ->
+    subproject.tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+        kotlinOptions {
+            freeCompilerArgs += "-Xskip-metadata-version-check"
+        }
     }
 }
 ```
@@ -2467,11 +2500,31 @@ cd android
 
 **Common version combinations that work:**
 
-- **React Native 0.77+**: Kotlin 2.0.21 + AGP 8.7.2
-- **React Native 0.76**: Not supported (ships Kotlin 1.9.25, SDK requires 2.0.21)
+- **React Native 0.77+**: **Kotlin stdlib 2.3.10** + **KGP 2.0.21** (unpinned classpath) + **AGP 8.10.1+** + **Gradle 8.11.1+**
+- **React Native 0.76**: Not supported (ships Kotlin 1.9.25 / incompatible toolchain)
 - **React Native 0.75 and below**: Not supported by Spreedly SDK
 
-#### 10. **Android Lint Failures with Kotlin 2.0.21+**
+#### 10. **`checkDebugAarMetadata` / `androidx.browser` AAR metadata failures**
+
+**Problem**: Build fails during `:app:checkDebugAarMetadata` with errors mentioning **`androidx.browser:browser:1.9.0`** (or similar), requiring a higher **`compileSdkVersion`** or compatible **AGP**.
+
+**Root Cause**: Spreedly native SDKs pull **`androidx.browser:browser:1.9.0`**, which declares **API 36** in its AAR metadata. **AGP 8.9.x** only allows **`compileSdk` 35** for that check unless you use a newer AGP that supports API 36.
+
+**Solution**:
+
+- Set **`compileSdkVersion = 36`** in `android/build.gradle` `ext`.
+- Use **AGP 8.10.1+** and **Gradle 8.11.1+** (see [Step 5](#step-5-android-setup)).
+- Sync and run `./gradlew :app:checkDebugAarMetadata` to confirm.
+
+#### 11. **`KotlinTopLevelExtension` class vs interface (KGP pinned to 2.3.10)**
+
+**Problem**: Gradle fails with errors involving **`KotlinTopLevelExtension`**, or **class/interface mismatch** when applying the React Native or Android Gradle plugins.
+
+**Root Cause**: **`classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")`** with **`kotlinVersion = "2.3.10"`** forces **KGP 2.3.10**, which is **incompatible** with **React Native 0.77’s** Gradle plugin expectations (built for **KGP 2.0.21**).
+
+**Solution**: **Remove the version** from the Kotlin Gradle plugin classpath — use **`classpath("org.jetbrains.kotlin:kotlin-gradle-plugin")`** only — and keep **`kotlinVersion = "2.3.10"`** for **stdlib** resolution. Retain the **`-Xskip-metadata-version-check`** `subprojects` block from [Step 5](#step-5-android-setup).
+
+#### 12. **Android Lint Failures with Kotlin 2.3.10**
 
 **Problem**: Build fails during lint analysis with errors like:
 
@@ -2479,17 +2532,17 @@ cd android
 - `Found class org.jetbrains.kotlin.analysis.api.resolution.KaCallableMemberCall, but interface was expected`
 - `The crash seems to involve the detector androidx.lifecycle.lint.NonNullableMutableLiveDataDetector`
 
-**Root Cause**: Android Lint has compatibility issues with Kotlin 2.0.21+ and newer Compose versions.
+**Root Cause**: Android Lint can have compatibility issues with newer Kotlin versions and Compose.
 
-**Solution**: The Spreedly SDK automatically handles these lint compatibility issues. The SDK's `packages/core/android/build.gradle` already includes the necessary lint configuration to prevent these failures.
+**Solution**: The Spreedly SDK automatically handles many lint compatibility issues. The SDK's `packages/core/android/build.gradle` already includes the necessary lint configuration to prevent these failures.
 
-If you're still experiencing lint issues, verify that you're using the correct Kotlin version:
+If you're still experiencing lint issues, verify that you're using the correct Kotlin **stdlib** version:
 
 ```gradle
 // android/build.gradle
 buildscript {
     ext {
-        kotlinVersion = "2.0.21"  // Must be 2.0.21 or higher
+        kotlinVersion = "2.3.10"
     }
 }
 ```
@@ -2578,9 +2631,10 @@ Use this checklist to systematically diagnose and resolve integration issues:
 **Android Checklist:**
 
 - [ ] **Version Compatibility**
-  - [ ] Kotlin version 2.0.21 or higher
-  - [ ] Android Gradle Plugin 8.7.2 or higher
-  - [ ] Gradle wrapper 8.9 or higher
+  - [ ] Kotlin **stdlib** **2.3.10** (`ext.kotlinVersion`); **KGP** unpinned (resolves **2.0.21** with RN 0.77)
+  - [ ] Android Gradle Plugin **8.10.1** or higher
+  - [ ] Gradle wrapper **8.11.1** or higher
+  - [ ] **`-Xskip-metadata-version-check`** on `KotlinCompile` tasks (root `subprojects` block)
   - [ ] React Native 0.77 or higher
 
 - [ ] **Gradle Configuration**
