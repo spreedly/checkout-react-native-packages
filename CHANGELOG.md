@@ -1,30 +1,61 @@
 # CHANGELOG
 
-## [1.0.2] - 2026-04-29
+## [1.0.3-beta.1] - 2026-04-30
 
 ### 🔄 Changed
 
-  - Fix: dependabot config updates and security vulnerablity fix
-  - Fix: Scope Dependabot to SDK and fix example keyboard layout
-  - Chore: Dependabot ignore for react-native-screens and example Gemfile.lock refresh
-  - Fix: Patch basic-ftp and follow-redirects vulnerabilities
-  - Fix: CodeQL SDK paths and Gradle Maven repos
-  - Chore: Consolidate Dependabot Gemfile and CI action bumps
-  - Fix: Firebase android auto version bump
-  - Fix: Patch transitive deps, addressable, and Stripe APM install docs
-  - Fix: Align iOS CocoaPods CI with nightly workflow
-  - Feat: App distribution workflows and Xcode Cloud integration
-  - Chore: Bump Kotlin 2.3.10 and Spreedly Android SDK 0.13.0
+  - Fix: CHANGELOG.md copy path in release pipeline
 
 ### 📦 Native SDK Versions
 
 | Platform | SDK                  | Version |
 | -------- | -------------------- | ------- |
-| Android  | checkout-android     | 0.13.0 |
+| Android  | checkout-android     | 0.14.0 |
 | iOS      | checkout-ios-package | 1.2.2 |
 
 ---
 
+
+## [1.0.3-beta.0] - 2026-04-30
+
+### 🔄 Changed
+
+  - Chore: Add dependency-review workflow for PR vulnerability gating
+
+### 📦 Native SDK Versions
+
+| Platform | SDK                  | Version |
+| -------- | -------------------- | ------- |
+| Android  | checkout-android     | 0.14.0 |
+| iOS      | checkout-ios-package | 1.2.2 |
+
+---
+
+
+## [1.0.2] - 2026-04-29
+
+### 🔄 Changed
+
+- Fix: dependabot config updates and security vulnerablity fix
+- Fix: Scope Dependabot to SDK and fix example keyboard layout
+- Chore: Dependabot ignore for react-native-screens and example Gemfile.lock refresh
+- Fix: Patch basic-ftp and follow-redirects vulnerabilities
+- Fix: CodeQL SDK paths and Gradle Maven repos
+- Chore: Consolidate Dependabot Gemfile and CI action bumps
+- Fix: Firebase android auto version bump
+- Fix: Patch transitive deps, addressable, and Stripe APM install docs
+- Fix: Align iOS CocoaPods CI with nightly workflow
+- Feat: App distribution workflows and Xcode Cloud integration
+- Chore: Bump Kotlin 2.3.10 and Spreedly Android SDK 0.13.0
+
+### 📦 Native SDK Versions
+
+| Platform | SDK                  | Version |
+| -------- | -------------------- | ------- |
+| Android  | checkout-android     | 0.13.0  |
+| iOS      | checkout-ios-package | 1.2.2   |
+
+---
 
 ## [1.0.0] - 2026-04-06
 
