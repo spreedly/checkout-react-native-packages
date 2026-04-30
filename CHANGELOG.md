@@ -5,6 +5,8 @@
 ### 🔄 Changed
 
   - Fix: Release pipeline hardening and pre-commit reliability
+  - Fix: CHANGELOG.md copy path in release pipeline
+  - Chore: Add dependency-review workflow for PR vulnerability gating
 
 ### 📦 Native SDK Versions
 
@@ -12,72 +14,6 @@
 | -------- | -------------------- | ------- |
 | Android  | checkout-android     | 0.14.0 |
 | iOS      | checkout-ios-package | 1.2.2 |
-
----
-
-
-## [1.0.3-beta.2] - 2026-04-30
-
-### 🔄 Changed
-
-- Chore: Format CHANGELOG and lerna.json
-
-### ⚠️ Breaking Changes
-
-- Fix: Remove integration_guide.md sync from release pipeline
-
-**Migration Steps:**
-
-Please review the [Integration Guide](docs/guides/integration_guide.md) for detailed migration instructions.
-If you encounter issues, refer to the [Troubleshooting](docs/guides/integration_guide.md#troubleshooting) section or contact support.
-
-### 🔧 Technical Details
-
-For developers integrating this release, please review the following:
-
-- **API Changes**: Check updated method signatures and parameter requirements
-- **Dependencies**: Review updated dependency versions in package.json
-- **Configuration**: Verify any new or changed configuration options
-- **Testing**: Update test suites to match new behavior
-
-See the [Integration Guide](docs/guides/integration_guide.md) for complete technical documentation.
-
-### 📦 Native SDK Versions
-
-| Platform | SDK                  | Version |
-| -------- | -------------------- | ------- |
-| Android  | checkout-android     | 0.14.0  |
-| iOS      | checkout-ios-package | 1.2.2   |
-
----
-
-## [1.0.3-beta.1] - 2026-04-30
-
-### 🔄 Changed
-
-- Fix: CHANGELOG.md copy path in release pipeline
-
-### 📦 Native SDK Versions
-
-| Platform | SDK                  | Version |
-| -------- | -------------------- | ------- |
-| Android  | checkout-android     | 0.14.0  |
-| iOS      | checkout-ios-package | 1.2.2   |
-
----
-
-## [1.0.3-beta.0] - 2026-04-30
-
-### 🔄 Changed
-
-- Chore: Add dependency-review workflow for PR vulnerability gating
-
-### 📦 Native SDK Versions
-
-| Platform | SDK                  | Version |
-| -------- | -------------------- | ------- |
-| Android  | checkout-android     | 0.14.0  |
-| iOS      | checkout-ios-package | 1.2.2   |
 
 ---
 
