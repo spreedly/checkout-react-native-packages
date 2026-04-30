@@ -169,6 +169,7 @@ See [CHANGELOG.md](CHANGELOG.md) for the full release history.
 
 - [Changelog](CHANGELOG.md)
 - [Security Policy](SECURITY.md)
+- [Example App](https://github.com/spreedly/checkout-react-native-example)
 - [Spreedly Docs](https://docs.spreedly.com)
 
 ## License
