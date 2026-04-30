@@ -116,6 +116,7 @@ export function PaymentForm() {
 
 ### Security & Privacy
 
+- **[SECURITY.md](SECURITY.md)** - Spreedly security policy (vulnerability reporting and disclosure)
 - **[Security Policy](docs/guides/security.md)** - Vulnerability reporting, security best practices, and compliance information
 - **[Android Data Safety Guide](docs/guides/android_data_safety_guide.md)** - Android data safety declarations and requirements
 - **[iOS Privacy Guide](docs/guides/ios_privacy_guide.md)** - iOS privacy manifest and App Store requirements
@@ -410,6 +411,12 @@ Every release includes SHA-256 checksums and GPG signatures for package integrit
 - [Integration Guide](docs/guides/integration_guide.md) - Complete setup and usage guide
 - [API Reference](docs/guides/integration_guide.md#api-reference) - Detailed API documentation
 - [Go-live / ops checklist](docs/GO_LIVE_INDEX.md) - Production readiness and CI runbook map
+
+### Spreedly support and security
+
+- **Support portal / Help Center**: [spreedly.com/support](https://spreedly.com/support/)
+- **Spreedly Trust Center (security)**: [security@spreedly.com](mailto:security@spreedly.com) — see [SECURITY.md](SECURITY.md) for reporting options
+- **Security policy (this repository)**: [SECURITY.md](SECURITY.md)
 
 ### Getting Help
 
