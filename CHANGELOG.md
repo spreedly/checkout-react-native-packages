@@ -1,14 +1,30 @@
 # CHANGELOG
 
+## [1.0.3] - 2026-04-30
+
+### 🔄 Changed
+
+  - Fix: Release pipeline hardening and pre-commit reliability
+
+### 📦 Native SDK Versions
+
+| Platform | SDK                  | Version |
+| -------- | -------------------- | ------- |
+| Android  | checkout-android     | 0.14.0 |
+| iOS      | checkout-ios-package | 1.2.2 |
+
+---
+
+
 ## [1.0.3-beta.2] - 2026-04-30
 
 ### 🔄 Changed
 
-  - Chore: Format CHANGELOG and lerna.json
+- Chore: Format CHANGELOG and lerna.json
 
 ### ⚠️ Breaking Changes
 
-  - Fix: Remove integration_guide.md sync from release pipeline
+- Fix: Remove integration_guide.md sync from release pipeline
 
 **Migration Steps:**
 
@@ -30,11 +46,10 @@ See the [Integration Guide](docs/guides/integration_guide.md) for complete techn
 
 | Platform | SDK                  | Version |
 | -------- | -------------------- | ------- |
-| Android  | checkout-android     | 0.14.0 |
-| iOS      | checkout-ios-package | 1.2.2 |
+| Android  | checkout-android     | 0.14.0  |
+| iOS      | checkout-ios-package | 1.2.2   |
 
 ---
-
 
 ## [1.0.3-beta.1] - 2026-04-30
 
