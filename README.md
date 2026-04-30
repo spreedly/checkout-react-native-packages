@@ -165,12 +165,13 @@ is the primary distribution channel.
 
 See [CHANGELOG.md](CHANGELOG.md) for the full release history.
 
-## Documentation
+## Support
 
-- [Changelog](CHANGELOG.md)
-- [Security Policy](SECURITY.md)
-- [Example App](https://github.com/spreedly/checkout-react-native-example)
-- [Spreedly Docs](https://docs.spreedly.com)
+- **Spreedly Documentation**: [docs.spreedly.com](https://docs.spreedly.com/)
+- **Support Portal**: [spreedly.com/support](https://spreedly.com/support/)
+- **Example App**: [checkout-react-native-example](https://github.com/spreedly/checkout-react-native-example)
+- **Changelog**: [CHANGELOG.md](CHANGELOG.md)
+- **Security**: [SECURITY.md](SECURITY.md)
 
 ## License
 
