@@ -178,3 +178,10 @@ See [CHANGELOG.md](CHANGELOG.md) for the full release history.
 Copyright 2025 Spreedly, Inc.
 
 Licensed under the Apache License, Version 2.0. See [LICENSE](LICENSE) for details.
+
+## Legal
+
+- [Terms of Service](https://legal.spreedly.com/#terms)
+- [Privacy Policy](https://legal.spreedly.com/#privacy-policy)
+- [License](LICENSE) (Apache 2.0)
+
