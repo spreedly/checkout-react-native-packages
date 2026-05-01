@@ -1,12 +1,12 @@
 # CHANGELOG
 
-## [1.0.3] - 2026-04-30
+## [1.0.4-beta.0] - 2026-05-01
 
 ### 🔄 Changed
 
+  - Fix: gpg signed and verified commit
+  - Fix: GPG import and signing identity in release workflow
   - Fix: Release pipeline hardening and pre-commit reliability
-  - Fix: CHANGELOG.md copy path in release pipeline
-  - Chore: Add dependency-review workflow for PR vulnerability gating
 
 ### 📦 Native SDK Versions
 
@@ -14,6 +14,24 @@
 | -------- | -------------------- | ------- |
 | Android  | checkout-android     | 0.14.0 |
 | iOS      | checkout-ios-package | 1.2.2 |
+
+---
+
+
+## [1.0.3] - 2026-04-30
+
+### 🔄 Changed
+
+- Fix: Release pipeline hardening and pre-commit reliability
+- Fix: CHANGELOG.md copy path in release pipeline
+- Chore: Add dependency-review workflow for PR vulnerability gating
+
+### 📦 Native SDK Versions
+
+| Platform | SDK                  | Version |
+| -------- | -------------------- | ------- |
+| Android  | checkout-android     | 0.14.0  |
+| iOS      | checkout-ios-package | 1.2.2   |
 
 ---
 
