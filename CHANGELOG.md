@@ -5,6 +5,7 @@
 ### 🔄 Changed
 
   - Fix: Distribution changelog sync via PR
+  - Fix: gpg signed and verified commit
 
 ### 📦 Native SDK Versions
 
@@ -12,54 +13,6 @@
 | -------- | -------------------- | ------- |
 | Android  | checkout-android     | 0.14.0 |
 | iOS      | checkout-ios-package | 1.2.2 |
-
----
-
-
-## [1.0.4-beta.2] - 2026-05-04
-
-### 🔄 Changed
-
-- Fix: GPG verified commits in release workflow
-
-### 📦 Native SDK Versions
-
-| Platform | SDK                  | Version |
-| -------- | -------------------- | ------- |
-| Android  | checkout-android     | 0.14.0  |
-| iOS      | checkout-ios-package | 1.2.2   |
-
----
-
-## [1.0.4-beta.1] - 2026-05-01
-
-### 🔄 Changed
-
-- Fix: verified commit gpg signed in release yml
-
-### 📦 Native SDK Versions
-
-| Platform | SDK                  | Version |
-| -------- | -------------------- | ------- |
-| Android  | checkout-android     | 0.14.0  |
-| iOS      | checkout-ios-package | 1.2.2   |
-
----
-
-## [1.0.4-beta.0] - 2026-05-01
-
-### 🔄 Changed
-
-- Fix: gpg signed and verified commit
-- Fix: GPG import and signing identity in release workflow
-- Fix: Release pipeline hardening and pre-commit reliability
-
-### 📦 Native SDK Versions
-
-| Platform | SDK                  | Version |
-| -------- | -------------------- | ------- |
-| Android  | checkout-android     | 0.14.0  |
-| iOS      | checkout-ios-package | 1.2.2   |
 
 ---
 
