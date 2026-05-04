@@ -1,10 +1,10 @@
 # CHANGELOG
 
-## [1.0.4-beta.2] - 2026-05-04
+## [1.0.5] - 2026-05-04
 
 ### 🔄 Changed
 
-  - Fix: GPG verified commits in release workflow
+  - Fix: Distribution changelog sync via PR
 
 ### 📦 Native SDK Versions
 
@@ -15,6 +15,21 @@
 
 ---
 
+
+## [1.0.4-beta.2] - 2026-05-04
+
+### 🔄 Changed
+
+- Fix: GPG verified commits in release workflow
+
+### 📦 Native SDK Versions
+
+| Platform | SDK                  | Version |
+| -------- | -------------------- | ------- |
+| Android  | checkout-android     | 0.14.0  |
+| iOS      | checkout-ios-package | 1.2.2   |
+
+---
 
 ## [1.0.4-beta.1] - 2026-05-01
 
