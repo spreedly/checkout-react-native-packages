@@ -1,18 +1,37 @@
 # CHANGELOG
 
-## [1.0.5] - 2026-05-04
+## [1.0.6]
 
 ### 🔄 Changed
 
-  - Fix: Distribution changelog sync via PR
-  - Fix: gpg signed and verified commit
+- Feat: Tag-driven release system with RC and stable pipelines
+- Feat: Dev channel auto-publish on merge to main and release branches
+- Feat: Release governance workflows (readiness, health, cleanup, EOL)
+- Feat: Prepare-release workflow for automated version bump PRs
+- Feat: Maintenance branch CI for release/N.x branches
 
 ### 📦 Native SDK Versions
 
 | Platform | SDK                  | Version |
 | -------- | -------------------- | ------- |
-| Android  | checkout-android     | 0.14.0 |
-| iOS      | checkout-ios-package | 1.2.2 |
+| Android  | checkout-android     | 0.14.0  |
+| iOS      | checkout-ios-package | 1.2.2   |
+
+---
+
+## [1.0.5] - 2026-05-04
+
+### 🔄 Changed
+
+- Fix: Distribution changelog sync via PR
+- Fix: gpg signed and verified commit
+
+### 📦 Native SDK Versions
+
+| Platform | SDK                  | Version |
+| -------- | -------------------- | ------- |
+| Android  | checkout-android     | 0.14.0  |
+| iOS      | checkout-ios-package | 1.2.2   |
 
 ---
 
