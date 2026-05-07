@@ -1,0 +1,11 @@
+* @spreedly/contractors-rsystems-headless-checkout
+/.github/ @spreedly/contractors-rsystems-headless-checkout
+/.release-config.json @spreedly/contractors-rsystems-headless-checkout
+/.release-config.schema.json @spreedly/contractors-rsystems-headless-checkout
+/lerna.json @spreedly/contractors-rsystems-headless-checkout
+/config/ @spreedly/contractors-rsystems-headless-checkout
+/packages/core/ @spreedly/contractors-rsystems-headless-checkout
+/packages/stripe-apm/ @spreedly/contractors-rsystems-headless-checkout
+/packages/braintree-apm/ @spreedly/contractors-rsystems-headless-checkout
+/example/ @spreedly/contractors-rsystems-headless-checkout
+/docs/ @spreedly/contractors-rsystems-headless-checkout
