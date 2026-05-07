@@ -1,5 +1,22 @@
 # CHANGELOG
 
+## [1.0.7] - 2026-05-07
+
+### 🔄 Changed
+
+  - Fix: updated prepare release workflow
+  - Fix: Tag release workflow stable checksums and GPG identity
+
+### 📦 Native SDK Versions
+
+| Platform | SDK                  | Version |
+| -------- | -------------------- | ------- |
+| Android  | checkout-android     | 0.14.0 |
+| iOS      | checkout-ios-package | 1.2.2 |
+
+---
+
+
 ## [1.0.6]
 
 ### 🔄 Changed
