@@ -24,7 +24,7 @@ Generate a Personal Access Token (PAT) with `read:packages` scope at
 Add the following to your project-level `.npmrc` (or the global `~/.npmrc`):
 
 ```properties
-//npm.pkg.github.com/:_authToken=YOUR_PERSONAL_ACCESS_TOKEN
+//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}
 @spreedly:registry=https://npm.pkg.github.com
 ```
 
