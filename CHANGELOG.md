@@ -1,20 +1,35 @@
 # CHANGELOG
 
-## [1.0.8] - 2026-05-07
+## [1.0.9] - 2026-05-13
 
 ### 🔄 Changed
 
-  - Fix: prepare release cleanup
+- Feat: React Native 0.79 baseline and Dependabot Gradle ignores
+- Chore: Consolidate Dependabot Android bumps and follow-redirects
 
 ### 📦 Native SDK Versions
 
 | Platform | SDK                  | Version |
 | -------- | -------------------- | ------- |
-| Android  | checkout-android     | 0.14.0 |
-| iOS      | checkout-ios-package | 1.2.2 |
+| Android  | checkout-android     | 1.0.1   |
+| iOS      | checkout-ios-package | 1.3.8   |
 
 ---
 
+## [1.0.8] - 2026-05-07
+
+### 🔄 Changed
+
+- Fix: prepare release cleanup
+
+### 📦 Native SDK Versions
+
+| Platform | SDK                  | Version |
+| -------- | -------------------- | ------- |
+| Android  | checkout-android     | 0.14.0  |
+| iOS      | checkout-ios-package | 1.2.2   |
+
+---
 
 ## [1.0.7] - 2026-05-07
 
