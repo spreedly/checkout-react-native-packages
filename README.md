@@ -7,16 +7,11 @@ This repository hosts the compiled npm packages for the
 Spreedly Checkout React Native SDK (`@spreedly/react-native-checkout`)
 via [GitHub Packages](https://github.com/features/packages).
 
-Source code and issue tracking live in an internal repository. Public documentation
-is available at [docs.spreedly.com](https://docs.spreedly.com).
+Public documentation is available at [docs.spreedly.com](https://docs.spreedly.com).
 
 ## Installation
 
 ### 1. Configure GitHub Packages authentication
-
-> **Note:** GitHub Packages authentication is required while this repository is
-> internal. Once the repository is made public, the credentials block below can
-> be removed and packages will resolve without a PAT.
 
 Generate a Personal Access Token (PAT) with `read:packages` scope at
 [github.com/settings/tokens](https://github.com/settings/tokens).
@@ -28,6 +23,9 @@ Add the following to your project-level `.npmrc` (or the global `~/.npmrc`):
 @spreedly:registry=https://npm.pkg.github.com
 ```
 
+
+This repository and its packages are **public** on GitHub — you do not need org membership or a private-repo token. GitHub Packages still requires authenticated requests to `npm.pkg.github.com`, so only `GITHUB_TOKEN` and `GITHUB_USERNAME` are needed.
+
 ### 2. Install the package
 
 ```bash
@@ -38,59 +36,118 @@ npm install @spreedly/react-native-checkout
 yarn add @spreedly/react-native-checkout
 ```
 
-### 3. iOS setup
+### 3. Android setup
 
-```bash
-cd ios && pod install
-```
+Update your project-level `android/build.gradle` with the Kotlin and Compose dependencies required by the SDK, and add the metadata version check workaround:
 
-### 4. Android setup
-
-The React Native SDK depends on native Android artifacts published to
-[checkout-android-maven](https://github.com/spreedly/checkout-android-maven).
-Add the required Maven repositories to your app's `settings.gradle.kts`:
-
-```kotlin
-dependencyResolutionManagement {
+```gradle
+buildscript {
+    ext {
+        buildToolsVersion = "36.0.0"
+        minSdkVersion = 26
+        compileSdkVersion = 36
+        targetSdkVersion = 36
+        ndkVersion = "27.1.12297006"
+        kotlinVersion = "2.3.10"
+        androidGradlePluginVersion = "8.12.0"
+    }
     repositories {
         google()
         mavenCentral()
+    }
+    dependencies {
+        classpath("com.android.tools.build:gradle:${androidGradlePluginVersion}")
+        classpath("com.facebook.react:react-native-gradle-plugin")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlinVersion}")
+        classpath("org.jetbrains.kotlin:kotlin-serialization:${kotlinVersion}")
+        classpath("org.jetbrains.kotlin:compose-compiler-gradle-plugin:${kotlinVersion}")
+    }
+}
 
-        // Spreedly GitHub Packages repository
-        maven {
-            url = uri("https://maven.pkg.github.com/spreedly/checkout-android-maven")
-            credentials {
-                username = providers.gradleProperty("gpr.usr").orNull
-                    ?: System.getenv("GITHUB_USERNAME")
-                password = providers.gradleProperty("gpr.key").orNull
-                    ?: System.getenv("GITHUB_TOKEN")
-            }
-        }
+apply plugin: "com.facebook.react.rootproject"
 
-        // Forter 3DS SDK repository (required for 3DS authentication)
-        maven {
-            url = uri("https://mobile-sdks.forter.com/android")
-            credentials {
-                username = "forter-android-sdk"
-                password = ""
-            }
+subprojects { subproject ->
+    subproject.tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+        compilerOptions {
+            freeCompilerArgs.add("-Xskip-metadata-version-check")
         }
     }
 }
 ```
 
-Add your GitHub credentials to `~/.gradle/gradle.properties` (user-level, not committed):
+### 4. iOS setup
 
-```properties
-gpr.usr=YOUR_GITHUB_USERNAME
-gpr.key=ghp_YOUR_PERSONAL_ACCESS_TOKEN
+Add the Spreedly pod setup script to your `ios/Podfile` and call `init_spreedly_checkout_pods()` inside your app target:
+
+```ruby
+# Resolve react_native_pods.rb with node to allow for hoisting
+require Pod::Executable.execute_command('node', ['-p',
+  'require.resolve(
+    "react-native/scripts/react_native_pods.rb",
+    {paths: [process.argv[1]]},
+  )', __dir__]).strip
+
+require Pod::Executable.execute_command('node', ['-p',
+  'require.resolve(
+    "@spreedly/react-native-checkout/scripts/spreedly_pods_setup.rb",
+    {paths: [process.argv[1]]},
+  )', __dir__]).strip
+
+platform :ios, min_ios_version_supported
+prepare_react_native_project!
+
+target 'YourApp' do
+  config = use_native_modules!
+
+  use_react_native!(
+    :path => config[:reactNativePath],
+    :app_path => "#{Pod::Config.instance.installation_root}/.."
+  )
+
+  init_spreedly_checkout_pods()
+
+  post_install do |installer|
+    react_native_post_install(
+      installer,
+      config[:reactNativePath],
+      :mac_catalyst_enabled => false
+    )
+  end
+end
+```
+
+Then install pods:
+
+```bash
+cd ios && pod install
+```
+
+### 5. Run the app
+
+Start Metro and launch on a device or simulator:
+
+```bash
+# Start the Metro bundler
+npm start
+# or
+yarn start
+
+# In a separate terminal — Android
+npm run android
+# or
+yarn android
+
+# In a separate terminal — iOS
+npm run ios
+# or
+yarn ios
 ```
 
 ## Compatibility
 
 | Requirement | Version |
 |-------------|---------|
-| React Native | 0.77+ (recommended 0.79+) |
+| React Native | 0.79+ |
 | React | 18.2+ |
 | Android | minSdk 26 (Android 8.0+), targetSdk 34, compileSdk 36 |
 | iOS | 15.1+, Xcode 15+ |
@@ -103,63 +160,25 @@ All published npm tarballs are **GPG-signed**. Stable releases include:
 - **SHA-256 checksum manifest** (`release-manifest.json`) attached to GitHub Releases
 - **GPG-signed manifest** (`release-manifest.json.asc`) for manifest integrity verification
 
-To verify a package signature:
-
-```bash
-# Import Spreedly's public signing key (published on the source repo)
-gpg --import spreedly-signing-key.pub
-
-# Confirm the imported key fingerprint matches what Support communicated
-# when they shared the key. Compare both values byte-for-byte before trusting it.
-gpg --fingerprint
-
-# Verify the manifest
-gpg --verify release-manifest.json.asc release-manifest.json
-```
-
 Contact [mobile-team@spreedly.com](mailto:mobile-team@spreedly.com) for the public signing key.
 
 ### Additional verification steps
 
 **Signed release tag** — each tag is signed by the same key:
 
-```bash
-git clone https://github.com/spreedly/checkout-react-native-packages.git
-cd checkout-react-native-packages
-git tag -v v1.0.2    # expect "Good signature from ..." matching the fingerprint Support shared
-```
-
 **SHA-256 round-trip against the manifest** — once the manifest signature checks out,
 validate any tarball you've downloaded from GitHub Packages against the trusted hashes:
-
-```bash
-TAG=v1.0.2
-BASE="https://github.com/spreedly/checkout-react-native-packages/releases/download/${TAG}"
-
-curl -L -o release-manifest.json     "${BASE}/release-manifest.json"
-curl -L -o release-manifest.json.asc "${BASE}/release-manifest.json.asc"
-
-gpg --verify release-manifest.json.asc release-manifest.json
-
-# Verify against the manifest
-jq -r '.artifacts[] | "\(.sha256)  \(.file)"' release-manifest.json | sha256sum -c
-```
 
 ## Distribution Strategy
 
 **Current channel: GitHub Packages (npm)**
 
-- Requires a GitHub Personal Access Token with `read:packages` scope.
+- This repository and all published packages are **public** on GitHub.
+- Install requires `GITHUB_TOKEN` (with `read:packages`) and `GITHUB_USERNAME` — see [Installation](#installation).
 - All artifacts are published under the `@spreedly` scope.
 - Both release candidates (`-rc.N`) and stable versions are available.
-- Dev builds (`-dev.*`) are published for internal testing.
 
-**GitHub Packages visibility:** This repository will be made public, removing
-the PAT requirement for consumers.
-
-**npm public registry:** Planned for a future release to provide unauthenticated
-public access via the standard npm registry. Until then, GitHub Packages
-is the primary distribution channel.
+**npm public registry:** Planned for a future release to provide access via the standard npm registry (`npmjs.com`). Until then, GitHub Packages is the primary distribution channel.
 
 ## Version History
 
@@ -184,4 +203,3 @@ Licensed under the Apache License, Version 2.0. See [LICENSE](LICENSE) for detai
 - [Terms of Service](https://legal.spreedly.com/#terms)
 - [Privacy Policy](https://legal.spreedly.com/#privacy-policy)
 - [License](LICENSE) (Apache 2.0)
-
