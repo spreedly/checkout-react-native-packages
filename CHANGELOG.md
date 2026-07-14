@@ -1,5 +1,62 @@
 # CHANGELOG
 
+## [Unreleased]
+
+### Native SDK Versions
+
+| Platform | SDK                  | Version |
+| -------- | -------------------- | ------- |
+| Android  | checkout-android     | 1.1.0   |
+| iOS      | checkout-ios-package | 1.4.1   |
+
+---
+
+## [1.0.10] - 2026-07-13
+
+### Fixed
+
+- **Android `SPLTextField`**: do not measure the embedded `ComposeView` before window attach (fixes Fabric + react-native-screens crash: `Cannot locate windowRecomposer`).
+- **iOS `ScreenSecurity`**: App Switcher / multitasking card no longer exposes payment UI when protection is active.
+- **ACH payments**: Bug fix for ACH payment flows.
+- Dependabot vulnerability fixes.
+
+### Added
+
+- **ACH bank account**: `SpreedlyCore.achBankAccountBottomSheet()`, `SpreedlyCore.createBankAccount()`, ACH `FormFieldTypes`, and `BankAccountType` / `BankAccountHolderType` enums. See [ACH Bank Account Guide](guides/ach_bank_account_guide.md).
+- **`HostedFieldStatePayload.iin`**: merchant-safe IIN prefix on CARD field snapshots (iframe parity).
+- **Braintree APM**: Optional `clientToken`, Success/cancel payloads may include `paymentMethodType`, `venmoUsername` (Android), and cancel `message`.
+- **`SavedCardInfo.cardholderName`**: Optional display name on recache UI (Android).
+- iFrame → React Native migration for merchants and relevant docs updated.
+- Hosted fields and Express: field-state callbacks, PAN display controls, autofill toggle, international ZIP validation, card brand icons, and related Express/recache options.
+- Stripe APM: optional PaymentSheet `appearance` for both platforms.
+
+### Breaking
+
+- **`showsAutofillToggle`**: removed from `paymentBottomSheet()` and `PaymentBottomSheet`. Use `enableAutofill` for PAN/CVC autofill.
+- **`SPLTextField`**: removed `observeHostedCardDisplayState`, `cvvDisplayMasked`, and `cardNumberFormat`. CARD/CVV display always follows `SpreedlyCore.setNumberFormat` / `toggleMask`. Use `getHostedCardDisplayState` or `onFieldStateChange` for mask UI.
+- **`SPLTextField`**: no `keyboardType` / `textContentType`; use `formFieldType` and `enableAutofill`.
+- Stripe APM (iOS): dismissed sheet returns `status: 'canceled'` (not `failed`).
+
+### Changed
+
+- Default hosted display state: `PRETTY` with unmasked PAN/CVV. `setNumberFormat('PRETTY')` unmasks PAN only; CVV mask preserved. Full mask uses `*`.
+- **Hosted fields**: `enableAutofill: false` no longer clears PAN/CVV; autofill suppression applies to expiry, name, and address fields; expiry Wallet autofill and global theme refresh are handled by the SDK.
+- Fix: package release setup to distribution repo.
+- Stable release approval gating for production publishes.
+
+### Documentation
+
+- Merchant docs updated for hosted fields, recache, 3DS gateway timing, and Stripe APM; iFrame API mapping consolidated into the migration guide.
+
+### Native SDK Versions
+
+| Platform | SDK                  | Version |
+| -------- | -------------------- | ------- |
+| Android  | checkout-android     | 1.1.0   |
+| iOS      | checkout-ios-package | 1.4.1   |
+
+---
+
 ## [1.0.9] - 2026-05-13
 
 ### 🔄 Changed
