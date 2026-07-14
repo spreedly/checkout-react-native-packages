@@ -1,16 +1,5 @@
 # CHANGELOG
 
-## [Unreleased]
-
-### Native SDK Versions
-
-| Platform | SDK                  | Version |
-| -------- | -------------------- | ------- |
-| Android  | checkout-android     | 1.1.0   |
-| iOS      | checkout-ios-package | 1.4.1   |
-
----
-
 ## [1.0.10] - 2026-07-13
 
 ### Fixed
