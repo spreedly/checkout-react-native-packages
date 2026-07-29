@@ -10,9 +10,9 @@
 
 ### Added
 
-- **Threeds package** (`@spreedly/react-native-checkout-threeds`): Android-only optional satellite that pulls `com.spreedly:checkout-threeds` (Global Forter + Gateway-Specific 3DS). Card-only Android apps no longer need Forter Maven credentials. iOS 3DS remains in core. See [Integration Guide](guides/integration_guide.md) and [3DS Guide](guides/3ds_guide.md).
-- **Stripe Radar package** (`@spreedly/react-native-checkout-stripe-radar`): headless `StripeRadar.createRadarSession()` wrapping native `checkout-stripe-radar` / `SpreedlyStripeRadar`. See [Stripe Radar Guide](guides/stripe-radar.md).
-- **ACH bank account**: `SpreedlyCore.achBankAccountBottomSheet()`, `SpreedlyCore.createBankAccount()`, ACH `FormFieldTypes`, and `BankAccountType` / `BankAccountHolderType` enums. See [ACH Bank Account Guide](guides/ach_bank_account_guide.md).
+- **Threeds package** (`@spreedly/react-native-checkout-threeds`): Android-only optional satellite that pulls `com.spreedly:checkout-threeds` (Global Forter + Gateway-Specific 3DS). Card-only Android apps no longer need Forter Maven credentials. iOS 3DS remains in core.
+- **Stripe Radar package** (`@spreedly/react-native-checkout-stripe-radar`): headless `StripeRadar.createRadarSession()` wrapping native `checkout-stripe-radar` / `SpreedlyStripeRadar`.
+- **ACH bank account**: `SpreedlyCore.achBankAccountBottomSheet()`, `SpreedlyCore.createBankAccount()`, ACH `FormFieldTypes`, and `BankAccountType` / `BankAccountHolderType` enums.
 
 ### Breaking
 
