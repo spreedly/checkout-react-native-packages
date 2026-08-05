@@ -2,6 +2,26 @@
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-08-04
+
+### Added
+
+- **Click to Pay package** (`@spreedly/react-native-checkout-click-to-pay`): Mastercard Click to Pay with branded button, prepare flow, and custom themes. See [Click to Pay Guide](guides/click_to_pay_guide.md).
+
+### 🔄 Changed
+
+- `spreedly_post_install(installer)` now also disables Xcode 17+ explicit modules (`SWIFT_ENABLE_EXPLICIT_MODULES` / `CLANG_ENABLE_EXPLICIT_MODULES`) and pins `-Onone`/`wholemodule` Swift optimization for Stripe pods, working around a Swift 6.2.1+ compiler crash. These were previously boilerplate merchants had to copy into their own Podfile's `post_install`; they're now applied automatically by the one-line SDK call. See [Integration Guide](guides/integration_guide.md) and [Stripe APM Guide](guides/stripe_apm_guide.md).
+- Threeds documentations updated for developer & merchants
+
+### 📦 Native SDK Versions
+
+| Platform | SDK                  | Version |
+| -------- | -------------------- | ------- |
+| Android  | checkout-android     | 1.3.0   |
+| iOS      | checkout-ios-package | 1.6.0   |
+
+---
+
 ## [1.1.0] - 2026-07-28
 
 ### Fixed
@@ -10,9 +30,9 @@
 
 ### Added
 
-- **Threeds package** (`@spreedly/react-native-checkout-threeds`): Android-only optional satellite that pulls `com.spreedly:checkout-threeds` (Global Forter + Gateway-Specific 3DS). Card-only Android apps no longer need Forter Maven credentials. iOS 3DS remains in core.
-- **Stripe Radar package** (`@spreedly/react-native-checkout-stripe-radar`): headless `StripeRadar.createRadarSession()` wrapping native `checkout-stripe-radar` / `SpreedlyStripeRadar`.
-- **ACH bank account**: `SpreedlyCore.achBankAccountBottomSheet()`, `SpreedlyCore.createBankAccount()`, ACH `FormFieldTypes`, and `BankAccountType` / `BankAccountHolderType` enums.
+- **Threeds package** (`@spreedly/react-native-checkout-threeds`): Android-only optional satellite that pulls `com.spreedly:checkout-threeds` (Global Forter + Gateway-Specific 3DS). Card-only Android apps no longer need Forter Maven credentials. iOS 3DS remains in core. See [Integration Guide](guides/integration_guide.md) and [3DS Guide](guides/3ds_guide.md).
+- **Stripe Radar package** (`@spreedly/react-native-checkout-stripe-radar`): headless `StripeRadar.createRadarSession()` wrapping native `checkout-stripe-radar` / `SpreedlyStripeRadar`. See [Stripe Radar Guide](guides/stripe-radar.md).
+- **ACH bank account**: `SpreedlyCore.achBankAccountBottomSheet()`, `SpreedlyCore.createBankAccount()`, ACH `FormFieldTypes`, and `BankAccountType` / `BankAccountHolderType` enums. See [ACH Bank Account Guide](guides/ach_bank_account_guide.md).
 
 ### Breaking
 
