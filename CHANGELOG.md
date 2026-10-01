@@ -2,13 +2,33 @@
 
 ## [Unreleased]
 
+## [1.3.0] - 2026-09-29
+
+### 🔄 Changed
+
+  - Chore: Changed Kotlin version from 2.3.10 to 2.1.20 stable version
+  - Fix: joi, fast-uri, js-yaml version updated, smol-toml added in resolutions and other vulnerabilities fixes
+
+### 📦 Native SDK Versions
+
+| Platform | SDK                  | Version |
+| -------- | -------------------- | ------- |
+| Android  | checkout-android     | 1.4.0 |
+| iOS      | checkout-ios-package | 1.6.1 |
+
+---
+
+### 🔄 Changed
+
+- Android Kotlin support now uses **Kotlin 2.1.20** as the minimum supported version. Updated the Android package Gradle configuration and integration guidance to keep Kotlin, serialization, and Compose compiler plugins aligned.
+
 ## [1.2.1] - 2026-08-17
 
 ### Added
 
-- **Mandate at tokenization**: optional `mandate` on `SpreedlyCore.createCreditCard()` and `SpreedlyCore.createBankAccount()`, forwarded verbatim to Spreedly at `payment_method.mandate`. Opaque to the SDK — Spreedly owns the schema and validates server-side, versioned by `source_version`, so mandate changes never require an SDK upgrade. Reference wire semantics are ECMA-262 `JSON.stringify`: `NaN`/`Infinity` encode as `null`, and the field is omitted only when absent or empty. A mandate value with no JSON representation fails the call with an error naming the key — the SDK never silently drops or alters a mandate. Exports a `Mandate` type for typing your own mandate values. Never put cardholder data in a mandate.
+- **Mandate at tokenization**: optional `mandate` on `SpreedlyCore.createCreditCard()` and `SpreedlyCore.createBankAccount()`, forwarded verbatim to Spreedly at `payment_method.mandate`. Opaque to the SDK — Spreedly owns the schema and validates server-side, versioned by `source_version`, so mandate changes never require an SDK upgrade. Reference wire semantics are ECMA-262 `JSON.stringify`: `NaN`/`Infinity` encode as `null`, and the field is omitted only when absent or empty. A mandate value with no JSON representation fails the call with an error naming the key — the SDK never silently drops or alters a mandate. Exports a `Mandate` type for typing your own mandate values. Never put cardholder data in a mandate. See [Integration Guide](guides/integration_guide.md#mandates).
 
-- **Full payment method response passthrough**: completed results from `createCreditCard`, `createBankAccount`, payment/ACH bottom sheets, and recache now include the native Spreedly `paymentMethodResponse` (transaction + payment_method fields), plus `shouldRetain`, `state`, and `paymentMethodUpdatedAt` when present. `mapPaymentResult()` is unchanged for UI outcomes; read the full payload from the raw promise/event result.
+- **Full payment method response passthrough**: completed results from `createCreditCard`, `createBankAccount`, payment/ACH bottom sheets, and recache now include the native Spreedly `paymentMethodResponse` (transaction + payment_method fields), plus `shouldRetain`, `state`, and `paymentMethodUpdatedAt` when present. `mapPaymentResult()` is unchanged for UI outcomes; read the full payload from the raw promise/event result. See [Integration Guide](guides/integration_guide.md#api-reference).
 
 ### 🔄 Changed
 
@@ -27,11 +47,11 @@
 
 ### Added
 
-- **Click to Pay package** (`@spreedly/react-native-checkout-click-to-pay`): Mastercard Click to Pay with branded button, prepare flow, and custom themes.
+- **Click to Pay package** (`@spreedly/react-native-checkout-click-to-pay`): Mastercard Click to Pay with branded button, prepare flow, and custom themes. See [Click to Pay Guide](guides/click_to_pay_guide.md).
 
 ### 🔄 Changed
 
-- `spreedly_post_install(installer)` now also disables Xcode 17+ explicit modules (`SWIFT_ENABLE_EXPLICIT_MODULES` / `CLANG_ENABLE_EXPLICIT_MODULES`) and pins `-Onone`/`wholemodule` Swift optimization for Stripe pods, working around a Swift 6.2.1+ compiler crash. These were previously boilerplate merchants had to copy into their own Podfile's `post_install`; they're now applied automatically by the one-line SDK call.
+- `spreedly_post_install(installer)` now also disables Xcode 17+ explicit modules (`SWIFT_ENABLE_EXPLICIT_MODULES` / `CLANG_ENABLE_EXPLICIT_MODULES`) and pins `-Onone`/`wholemodule` Swift optimization for Stripe pods, working around a Swift 6.2.1+ compiler crash. These were previously boilerplate merchants had to copy into their own Podfile's `post_install`; they're now applied automatically by the one-line SDK call. See [Integration Guide](guides/integration_guide.md) and [Stripe APM Guide](guides/stripe_apm_guide.md).
 - Threeds documentations updated for developer & merchants
 
 ### 📦 Native SDK Versions
@@ -51,9 +71,9 @@
 
 ### Added
 
-- **Threeds package** (`@spreedly/react-native-checkout-threeds`): Android-only optional satellite that pulls `com.spreedly:checkout-threeds` (Global Forter + Gateway-Specific 3DS). Card-only Android apps no longer need Forter Maven credentials. iOS 3DS remains in core.
-- **Stripe Radar package** (`@spreedly/react-native-checkout-stripe-radar`): headless `StripeRadar.createRadarSession()` wrapping native `checkout-stripe-radar` / `SpreedlyStripeRadar`.
-- **ACH bank account**: `SpreedlyCore.achBankAccountBottomSheet()`, `SpreedlyCore.createBankAccount()`, ACH `FormFieldTypes`, and `BankAccountType` / `BankAccountHolderType` enums.
+- **Threeds package** (`@spreedly/react-native-checkout-threeds`): Android-only optional satellite that pulls `com.spreedly:checkout-threeds` (Global Forter + Gateway-Specific 3DS). Card-only Android apps no longer need Forter Maven credentials. iOS 3DS remains in core. See [Integration Guide](guides/integration_guide.md) and [3DS Guide](guides/3ds_guide.md).
+- **Stripe Radar package** (`@spreedly/react-native-checkout-stripe-radar`): headless `StripeRadar.createRadarSession()` wrapping native `checkout-stripe-radar` / `SpreedlyStripeRadar`. See [Stripe Radar Guide](guides/stripe-radar.md).
+- **ACH bank account**: `SpreedlyCore.achBankAccountBottomSheet()`, `SpreedlyCore.createBankAccount()`, ACH `FormFieldTypes`, and `BankAccountType` / `BankAccountHolderType` enums. See [ACH Bank Account Guide](guides/ach_bank_account_guide.md).
 
 ### Breaking
 
