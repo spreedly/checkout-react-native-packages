@@ -4,20 +4,9 @@
 
 ## [1.4.0] - 2026-10-28
 
-### 🔄 Changed
+### Fixed
 
-  - Chore: missing phase-1 custom validation option added
-  - Fix: XCode 27 simulator configurations and security alerts
-  - Fix: App distribution workflow fix and ios min deployment target set to 15
-
-### 📦 Native SDK Versions
-
-| Platform | SDK                  | Version |
-| -------- | -------------------- | ------- |
-| Android  | checkout-android     | 1.5.0 |
-| iOS      | checkout-ios-package | 1.7.0 |
-
----
+- Yarn resolutions for Dependabot/audit: axios 1.20.0, basic-ftp 6.2.x, brace-expansion 1.1.21/2.1.7/5.0.12, fast-uri 3.1.8, http-cache-semantics 4.3.0, image-size → image-size-next@1.2.2 (Metro-compatible CVE fix), ip-address 10.7.1, moment 2.31.0
 
 ### Added
 
@@ -28,9 +17,20 @@
   - Example app catalogue matches native SDK demos via `Platform`: Android single **Field configuration** card (`DemoOptionalFieldConfigCard` groups, Req, Custom validation); iOS two-card Optional address groups + Additional Fields Configuration.
   - [Integration Guide](guides/integration_guide.md) documents catalogue field constants, merchant custom validators, and `CUSTOM_FIELD_VALIDATION`.
 
-### Fixed
+### Changed
 
-- Yarn resolutions for Dependabot/audit: axios 1.20.0, basic-ftp 6.2.x, brace-expansion 1.1.21/2.1.7/5.0.12, fast-uri 3.1.8, http-cache-semantics 4.3.0, image-size → image-size-next@1.2.2 (Metro-compatible CVE fix), ip-address 10.7.1, moment 2.31.0
+  - Chore: missing phase-1 custom validation option added
+  - Fix: XCode 27 simulator configurations and security alerts
+  - Fix: App distribution workflow fix and ios min deployment target set to 15
+
+### Native SDK Versions
+
+| Platform | SDK                  | Version |
+| -------- | -------------------- | ------- |
+| Android  | checkout-android     | 1.5.0 |
+| iOS      | checkout-ios-package | 1.7.0 |
+
+---
 
 ## [1.3.0] - 2026-09-29
 
